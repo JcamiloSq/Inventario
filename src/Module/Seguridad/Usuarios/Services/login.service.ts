@@ -17,11 +17,11 @@ export class LoginService {
     });
 
     if (!user) {
-      throw new NotFoundException('No se encontró el usaurio indicado');
+      throw new NotFoundException('Las credenciales no son correctas');
     }
 
     if (user.Contrasena != loginDto.password) {
-      throw new NotFoundException('La contraseña no es correcta');
+      throw new NotFoundException('Las credenciales no son correctas');
     }
 
     return { message: 'succes' };
