@@ -20,7 +20,7 @@ export class Usuario {
   Contrasena: string;
 
   @Column({ type: 'bigint' })
-  Rol: string;
+  IdRol: string;
 
   @Column({ type: 'varchar' })
   Email: string;
