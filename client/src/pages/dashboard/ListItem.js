@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Drawer as MuiDrawer, List, ListItemIcon, ListItemText, Toolbar, ListItemButton, Collapse, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -6,14 +6,14 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Drawer() {
-  const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const [openInventory, setOpenInventory] = React.useState(true);
   const [openSecurity, setOpenSecurity] = React.useState(true);
   const [openFacture, setOpenFacture] = React.useState(true);
+
 
   const clickInventory = () => {
     setOpenInventory(!openInventory);
@@ -59,12 +59,14 @@ function Drawer() {
         </ListItemButton>
         <Collapse in={openInventory} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+          <Link to="/inventario/entrada/List" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
                 <StarBorder />
               </ListItemIcon>
-              <ListItemText primary="Starred" />
+              <ListItemText primary="Starred"/>
             </ListItemButton>
+            </Link>
           </List>
         </Collapse>
         <ListItemButton>
