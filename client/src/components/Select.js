@@ -6,7 +6,6 @@ const SelectComponent = ({
     label,
     field: { name, onBlur, value, onChange },
     form: { touched, errors, setFieldValue, setFieldTouched }, }) => {
-
     const inputLabel = React.useRef(null);
 
     const handleChange = (event) => {
