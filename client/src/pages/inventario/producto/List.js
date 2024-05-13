@@ -95,7 +95,7 @@ export default function ListProducto() {
 
       <Paper sx={{ height: 700, width: '95%' }}>
         <Link to="/inventario/producto/form">
-          <Button variant='contained' >Crear</Button>
+          <Button variant='outlaine' >Crear producto</Button>
         </Link>
         <DataGrid
           rows={rows}
