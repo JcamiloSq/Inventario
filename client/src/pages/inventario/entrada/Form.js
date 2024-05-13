@@ -88,7 +88,10 @@ export default function FormEntradaInventario() {
 
     const openModalProducto = () => setProductoModal(true);
 
-    const closeModalProducto = () => setProductoModal(false);
+    const closeModalProducto = () => {
+        setProductoModal(false);
+        setRowSelectionModel([]);
+    };
 
     const crearProductoSeleccion = async (values) => {
         try {

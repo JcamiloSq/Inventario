@@ -10,35 +10,58 @@ export class ProductoService {
   constructor(
     @InjectRepository(Producto)
     private productoRepository: Repository<Producto>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
   ) {}
 
-  async getProducto() {
-    return await this.dataSource.createQueryBuilder(Producto, 'p')
-    .select([
-        'p.IdProducto as IdProducto', 
+  async obtenerProductoPorId(id: number) {
+    return await this.productoRepository.findOneBy({ IdProducto: id });
+  }
+
+  async obtenerProductos() {
+    return await this.dataSource
+      .createQueryBuilder(Producto, 'p')
+      .select([
+        'p.IdProducto as IdProducto',
         'p.codigo as codigo',
         'p.Precio as Precio',
         'p.Descripcion as Descripcion',
-        'c.NombreCategoria as NombreCategoria'
-    ])
-    .leftJoin('Categoria', 'c', 'p.IdCategoria=c.IdCategoria')
-    .getRawMany();
+        'c.NombreCategoria as NombreCategoria',
+      ])
+      .leftJoin('Categoria', 'c', 'p.IdCategoria=c.IdCategoria')
+      .getRawMany();
   }
 
-  async createProducto(createDto:ProductoDto) {
-    const producto = new Producto();
-    producto.codigo = createDto.codigo;
-    producto.Descripcion = createDto.descripcion;
-    producto.Precio = createDto.precio;
-    producto.IdCategoria = createDto.categoria;
-    const newProducto = this.productoRepository.create(producto);
+  async crearProducto(createDto: ProductoDto) {
+    const newProducto = this.productoRepository.create(createDto);
     return this.productoRepository.save(newProducto);
   }
- 
+
+  async actualizarProducto(id: number, updateDto: ProductoDto) {
+    const productoExistente = await this.productoRepository.findOne({
+      where: { IdProducto: id },
+    });
+    if (!productoExistente) {
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+    }
+    const productoActualizado = this.productoRepository.merge(
+      productoExistente,
+      updateDto,
+    );
+
+    return this.productoRepository.save(productoActualizado);
+  }
+
+  async borrarProducto(id: number) {
+    return await this.productoRepository.delete({ IdProducto: id });
+  }
+
   async obtenerCategoria() {
-    return await this.dataSource.createQueryBuilder(Categoria,'Categoria')
-    .select([ 'Categoria.idCategoria as value', 'Categoria.NombreCategoria as label'])
-    .getRawMany();
+    return await this.dataSource
+      .createQueryBuilder(Categoria, 'Categoria')
+      .select([
+        'Categoria.idCategoria as value',
+        'Categoria.NombreCategoria as label',
+      ])
+      .getRawMany();
   }
 }
