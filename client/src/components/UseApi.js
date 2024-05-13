@@ -12,10 +12,15 @@ const handleResponse = async (response) => {
 };
 
 
-const doGet = async (endpoint, data) => {
-  const parametros = new global.URLSearchParams(data);
-  const response = await fetch(`${BASE_URL}${endpoint}?${parametros.toString()}`);
-  console.log(response);
+const doGet = async (endpoint, data=null) => {
+
+  const parametros = data ? new global.URLSearchParams(data) : null;
+  let response = await fetch(`${BASE_URL}${endpoint}`);
+
+  if (parametros){
+     response = await fetch(`${BASE_URL}${endpoint}?${parametros.toString()}`);    
+  }
+  
   return handleResponse(response);
 };
 
