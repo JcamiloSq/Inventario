@@ -5,7 +5,6 @@ import { NotificationContainer } from 'react-notifications';
 import App from './App';
 import Login from './pages/login/login';
 import Dashboard from './pages/dashboard/Dashboard';
-import ListEntradaInventario from './pages/inventario/entrada/List';
 import { Box, CssBaseline, Toolbar } from '@mui/material';
 import RoutesApp from './routes/Routes';
 
@@ -42,6 +41,7 @@ const Layout = () => {
           <Route path="/" element={<App />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path='*' element={<RoutesApp/>}></Route>
         </Routes>
     );
   } else {

@@ -33,6 +33,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import ShieldIcon from '@mui/icons-material/Shield';
 import SellIcon from '@mui/icons-material/Sell';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const drawerWidth = 280;
 
@@ -136,10 +137,20 @@ export default function Dashboard() {
     setOpen(false);
   };
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: '#1976d2',
+      },
+    },
+  });
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <ThemeProvider theme={darkTheme}>
+      <AppBar position="fixed" open={open} color="primary">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -165,6 +176,7 @@ export default function Dashboard() {
             </IconButton>
         </Toolbar>
       </AppBar>
+      </ThemeProvider>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>

@@ -1,43 +1,35 @@
 import * as React from 'react';
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridToolbar,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import { Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { field: 'name', headerName: 'Name', flex: 1, minWidth: 10 },
+  { field: 'code', headerName: 'ISO Code', flex: 1, minWidth: 180 },
+  { field: 'population', headerName: 'Population', type: 'number', flex: 1, minWidth: 180 },
+  { field: 'size', headerName: 'Size (km²)', type: 'number', flex: 1, minWidth: 180 },
   {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    flex: 1,
+    minWidth: 180,
+    getActions: () => [
+      <GridActionsCellItem icon={<EditIcon />} label="Edit" />,
+      <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
+    ],
+ },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
 
 const rows = [
   createData('India', 'IN', 1324171354, 3287263),
@@ -57,66 +49,39 @@ const rows = [
   createData('Brazil', 'BR', 210147125, 8515767),
 ];
 
-export default function ListEntradaInventario() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+// function CustomToolbar() {
+//   return (
+//     <GridToolbarContainer>
+//       <GridToolbarExport printOptions={{ disableToolbarButton: true }}/>
+//     </GridToolbarContainer>
+//   );
+// }
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+function createData(name, code, population, size) {
+  const density = population / size;
+  return { id: name, name, code, population, size, density };
+}
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+export default function EnhancedTable() {
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+    <Paper sx={{ height: 700, width: '95%' }}>
+      <Button variant='contained' >Crear</Button>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={10}
+        initialState={{
+          ...rows.initialState,
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
+        pageSizeOptions={[10, 30, 60]}
+        components={{
+          Toolbar: GridToolbar,
+        }}
+        // slots={{
+        //   toolbar: CustomToolbar,
+        // }}
+        disableSelectionOnClick
       />
     </Paper>
   );
