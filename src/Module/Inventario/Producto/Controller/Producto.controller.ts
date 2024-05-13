@@ -1,31 +1,62 @@
-import { Body, ConflictException, Controller, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ProductoService } from '../Service/Producto.service';
 import { ProductoDto } from '../Dto/Producto.dto';
 
 @Controller('producto')
 export class ProductoController {
-    constructor(private productoService: ProductoService){}
-  @Post()
-  async createProducto(@Body() createDto:ProductoDto) {
-    try {
-        return this.productoService.createProducto(createDto);
+  constructor(private productoService: ProductoService) {}
 
-    }   catch(error) {
-        throw new ConflictException(error.message)
+  @Post()
+  async crearProducto(@Body() createDto: ProductoDto) {
+    try {
+      return this.productoService.crearProducto(createDto);
+    } catch (error) {
+      throw new ConflictException(error.message);
     }
   }
 
-  @Get()
-  async getProducto() {
-    return await this.productoService.getProducto();
-  }
-  
   @Get('categoria')
-  async getCategoria() {
+  async obtenerCategoria() {
     return await this.productoService.obtenerCategoria();
   }
 
-  @Put()
-  async updateUsuario() {}
+  @Get(':id')
+  async obtenerProductoPorId(@Param('id') id: number) {
+    return await this.productoService.obtenerProductoPorId(id);
+  }
 
+  @Get()
+  async obtenerProductos() {
+    return await this.productoService.obtenerProductos();
+  }
+
+  @Put(':id')
+  async actualizarProducto(
+    @Param('id') id: number,
+    @Body() updateDto: ProductoDto,
+  ) {
+    try {
+      return await this.productoService.actualizarProducto(id, updateDto);
+    } catch (error) {
+      throw new ConflictException(error.message);
+    }
+  }
+
+  @Delete(':id')
+  async borrarProducto(@Param('id') id: number) {
+    try {
+      return await this.productoService.borrarProducto(id);
+    } catch (error) {
+      throw new ConflictException(error.message);
+    }
+  }
 }

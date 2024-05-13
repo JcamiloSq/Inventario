@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Double } from 'typeorm';
 
@@ -9,13 +8,13 @@ export class ProductoDto {
 
   @IsString()
   @IsNotEmpty()
-  descripcion: string;
+  Descripcion: string;
 
   @IsNumber()
   @IsNotEmpty()
-  precio: Double;
+  Precio: Double;
 
   @IsNumber()
   @IsNotEmpty()
-  categoria: number;
+  IdCategoria: number;
 }

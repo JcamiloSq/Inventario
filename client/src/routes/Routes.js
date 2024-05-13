@@ -23,6 +23,7 @@ export default function RoutesApp() {
             <Route path="/inventario/entrada/form" element={<ProtectedRoute><FormEntradaInventario /></ProtectedRoute>} />
             <Route path="/seguridad/rol" element={<ProtectedRoute><ListRol/></ProtectedRoute>} />
             <Route path="/inventario/producto/form" element={<ProtectedRoute><FormProducto/></ProtectedRoute>} />
+            <Route path="/inventario/producto/edit/:id" element={<ProtectedRoute><FormProducto/></ProtectedRoute>} />
             <Route path="/inventario/producto/list" element={<ProtectedRoute><ListProducto/></ProtectedRoute>} />
         </Routes>
     )
