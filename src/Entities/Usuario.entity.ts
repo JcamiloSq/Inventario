@@ -5,23 +5,26 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'usuario' })
+@Entity({ name: 'Usuario' })
 export class Usuario {
   @PrimaryGeneratedColumn()
   IdUsuario: number;
 
   @Column({ type: 'varchar' })
-  NombreUsuario: string;
+  Usuario: string;
+
+  @Column({ type: 'varchar' })
+  NombreCompleto: string;
 
   @Column({ type: 'varchar' })
   Contrasena: string;
 
   @Column({ type: 'bigint' })
-  Rol: string;
+  IdRol: string;
 
   @Column({ type: 'varchar' })
   Email: string;
 
   @CreateDateColumn()
-  createdDate: Date;
+  FechaRegistro: Date;
 }

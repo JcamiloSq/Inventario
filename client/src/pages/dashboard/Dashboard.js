@@ -207,7 +207,7 @@ export default function Dashboard() {
               </ListItemButton>
                 <Collapse in={openInventory} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <Link to="/inventario/producto/List" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/inventario/entrada/List" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <VerifiedIcon/>
@@ -215,7 +215,7 @@ export default function Dashboard() {
                         <ListItemText primary="Producto"/>
                       </ListItemButton>
                     </Link>
-                    <Link to="/inventario/producto/list" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/inventario/entrada/List" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <CategoryIcon/>

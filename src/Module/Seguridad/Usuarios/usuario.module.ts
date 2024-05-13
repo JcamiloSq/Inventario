@@ -14,4 +14,4 @@ import { Categoria } from 'src/Entities/Categoria.entity';
   controllers: [UsuarioController, LoginController, ProductoController],
   providers: [LoginService, ProductoService],
 })
-export class AppModule {}
+export class UsuarioModule {}
