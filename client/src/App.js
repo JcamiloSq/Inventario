@@ -10,7 +10,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>BIENVENIDO AL SISTEMA DE GESTION DE INVENTARIOS</p>
-        <Link to="/Login">
+        <Link to="/login">
           <Button
             fullWidth
             variant="contained"
