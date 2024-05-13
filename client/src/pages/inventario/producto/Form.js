@@ -3,7 +3,6 @@ import { Field, Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { Button, Grid, TextField, Typography, Paper, Toolbar } from '@mui/material';
 import { NotificationManager } from 'react-notifications';
-import { useNavigate } from 'react-router-dom';
 import useApi from '../../../components/UseApi';
 import SelectComponent from '../../../components/Select';
 
@@ -24,17 +23,20 @@ const initialState = {
 
 export default function FormProducto() {
     const { doPost, doGet } = useApi();
-    const navigate = useNavigate();
-    const [state, setState] = useState(initialState);
+    const [state, setPrevState] = useState(initialState);
+
+    const setState = (dataState) => {
+        setPrevState((prevState) => ({ ...prevState, ...dataState }));
+      };
 
     React.useEffect(()=>{
-        const init=async()=>{
-          const response=await doGet('producto/categoria'); 
-          console.log(response);
-          setState({ listCategoria:response })
-        }
+        const init = async()=>{
+            const response=await doGet('producto/categoria');
+            console.log(response);
+            setState({ listCategoria:response })
+        };
         init();
-      }, []);
+    }, [doGet]);
 
 
     const onSubmit = async (values) => {
@@ -64,7 +66,7 @@ export default function FormProducto() {
                             <Grid item xs={10} sm={6} md={4} lg={14}>
                                 <Paper elevation={20} style={{ width: 'auto', padding: '20px', marginLeft: '20px' }}>
                                     <Typography variant="h5" align="left" gutterBottom>
-                                        Entrada inventario
+                                        Producto
                                     </Typography>
                                     <Grid item xs={12}>
                                         <Button
@@ -102,7 +104,7 @@ export default function FormProducto() {
                                                 label="Precio"
                                                 type="text"
                                             />
-                                        </Grid>                                                                         
+                                        </Grid>
                                     </Grid>
                                 </Paper>
                             </Grid>

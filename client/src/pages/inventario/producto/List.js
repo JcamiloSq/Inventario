@@ -3,8 +3,6 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
 } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
@@ -34,15 +32,18 @@ const columns = [
 export default function ListProducto() {
   const { doGet } = useApi();
   const [rows, setRows]=React.useState([]);
-  React.useEffect(()=>{
-    const init=async()=>{
-      const response=await doGet('producto');
-      setRows(response);
-    }
-    init();
-  }, []);
 
-  
+  const init = React.useCallback(async()=>{
+    const response=await doGet('producto');
+    setRows(response);
+  }, [doGet])
+
+
+  React.useEffect(()=>{
+    init();
+  }, [init]);
+
+
   return (
     <Paper sx={{ height: 700, width: '95%' }}>
       <Link to="/inventario/producto/form">
