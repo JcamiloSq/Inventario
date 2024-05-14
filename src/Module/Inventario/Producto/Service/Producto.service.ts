@@ -16,7 +16,7 @@ export class ProductoService {
   async obtenerProductoPorId(id: number) {
     return await this.productoRepository.findOneBy({ IdProducto: id });
   }
-//Consulta con leftJoin
+  //Consulta con leftJoin
   async obtenerProductos() {
     return await this.dataSource
       .createQueryBuilder(Producto, 'p')
