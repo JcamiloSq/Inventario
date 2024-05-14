@@ -4,6 +4,7 @@ import FormEntradaInventario from "../pages/inventario/entrada/Form";
 import ListRol from "../pages/seguridad/rol/Rol";
 import FormProducto from "../pages/inventario/producto/Form";
 import ListProducto from "../pages/inventario/producto/List";
+import FormRol from "../pages/seguridad/rol/FormRol";
 
 export default function RoutesApp() {
 
@@ -25,6 +26,11 @@ export default function RoutesApp() {
             <Route path="/inventario/producto/form" element={<ProtectedRoute><FormProducto/></ProtectedRoute>} />
             <Route path="/inventario/producto/edit/:id" element={<ProtectedRoute><FormProducto/></ProtectedRoute>} />
             <Route path="/inventario/producto/list" element={<ProtectedRoute><ListProducto/></ProtectedRoute>} />
+            <Route path="/seguridad/rol/formrol" element={<ProtectedRoute><FormRol/></ProtectedRoute>} />
+            <Route path="/seguridad/rol/edit/:id" element={<ProtectedRoute><FormRol/></ProtectedRoute>} />
+
+
+            
         </Routes>
     )
 }
