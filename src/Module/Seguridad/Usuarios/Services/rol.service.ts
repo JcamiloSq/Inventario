@@ -11,11 +11,11 @@ export class RolService {
   constructor(
     @InjectRepository(Rol)
     private rolRepository: Repository<Rol>,
-    private dataSources: DataSource
-  ) { }
+    private dataSources: DataSource,
+  ) {}
 
   async ConsultarRoles() {
-    return await this.dataSources.createQueryBuilder(Rol,'Rol').getMany();
+    return await this.dataSources.createQueryBuilder(Rol, 'Rol').getMany();
   }
   //Obtener el Rol por ID
 
@@ -23,8 +23,7 @@ export class RolService {
     return await this.rolRepository.findOneBy({ IdRol: id });
   }
 
-
-  async crearRol (createDto: RolDto) {
+  async crearRol(createDto: RolDto) {
     const newRol = this.rolRepository.create(createDto);
     return this.rolRepository.save(newRol);
   }
@@ -36,23 +35,12 @@ export class RolService {
     if (!rolExistente) {
       throw new NotFoundException(`Rol con ID ${id} no encontrado`);
     }
-    const rolActualizad = this.rolRepository.merge(
-      rolExistente,
-      updateDto,
-    );
+    const rolActualizad = this.rolRepository.merge(rolExistente, updateDto);
 
     return this.rolRepository.save(rolActualizad);
   }
 
-  async borrarRol(id: number) {
+  async eliminarRol(id: number) {
     return await this.rolRepository.delete({ IdRol: id });
   }
-  
-
-
-
-
-
-
-
 }

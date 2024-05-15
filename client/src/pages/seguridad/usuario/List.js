@@ -20,7 +20,7 @@ const initialState = {
   openModalDelete: false,
 };
 
-export default function ListRol() {
+export default function ListUser() {
   const [state, setPrevState] = useState(initialState);
 
   const { doGet, doDelete } = useApi();
@@ -31,7 +31,7 @@ export default function ListRol() {
 
   const init = useCallback(async () => {
     try {
-      const respuestaRol = await doGet('rol');
+      const respuestaRol = await doGet('usuario');
       setState({ data: respuestaRol });
     } catch (error) {
       NotificationManager.error(error.message);
@@ -43,14 +43,16 @@ export default function ListRol() {
   }, [init]);
 
   const openDelete = (row) =>
-    setState({ idDelete: row.IdRol, openModalDelete: true });
+    setState({ idDelete: row.IdUsuario, openModalDelete: true });
+
   const closeDelete = () => setState({ idDelete: '', openModalDelete: false });
 
   const deleteRegister = async () => {
     const { idDelete } = state;
 
     try {
-      await doDelete(`${'rol'}/${idDelete}`);
+      console.log(idDelete);
+      await doDelete(`${'usuario'}/${idDelete}`);
       closeDelete();
       init();
       NotificationManager.success('Registro eliminado correctamente');
@@ -60,8 +62,10 @@ export default function ListRol() {
   };
 
   const columns = [
-    { field: 'IdRol', headerName: 'IdRol', flex: 1, minWidth: 10 },
-    { field: 'NombreRol', headerName: 'NombreRol', flex: 1, minWidth: 180 },
+    { field: 'Usuario', headerName: 'Usuario', flex: 1, minWidth: 100 },
+    { field: 'NombreCompleto', headerName: 'Nombre completo', flex: 1, minWidth: 180 },
+    { field: 'NombreRol', headerName: 'Rol', flex: 1, minWidth: 180 },
+    { field: 'Email', headerName: 'Correo', flex: 1, minWidth: 180 },
     {
       field: 'actions',
       type: 'actions',
@@ -70,7 +74,7 @@ export default function ListRol() {
       minWidth: 180,
       getActions: (params) => [
         <>
-          <Link to={`${'/seguridad/rol/edit'}/${params.row.IdRol}`}>
+          <Link to={`${'/seguridad/usuario/edit'}/${params.row.IdUsuario}`}>
             <GridActionsCellItem icon={<EditIcon />} label="Edit" />
           </Link>
           <GridActionsCellItem
@@ -108,11 +112,11 @@ export default function ListRol() {
         </>
       )}
       <Paper sx={{ height: 700, width: '95%' }}>
-        <Link to="/seguridad/rol/formrol">
+        <Link to="/seguridad/usuario/form">
           <Button variant="contained">Crear</Button>
         </Link>
         <DataGrid
-          getRowId={(rows) => rows.IdRol}
+          getRowId={(rows) => rows.IdUsuario}
           rows={rows}
           columns={columns}
           pageSize={10}
@@ -124,9 +128,6 @@ export default function ListRol() {
           components={{
             Toolbar: GridToolbar,
           }}
-          // slots={{
-          //   toolbar: CustomToolbar,
-          // }}
           disableSelectionOnClick
         />
       </Paper>

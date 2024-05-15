@@ -5,6 +5,5 @@ export class RolDto {
   @IsNotEmpty()
   NombreRol: string;
 
-
-  //crear datos 
+  //crear datos
 }

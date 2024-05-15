@@ -13,11 +13,10 @@ import { RolDto } from '../Dto/rol.dto';
 
 @Controller('rol')
 export class RolController {
-constructor(private rolService: RolService){}
+  constructor(private rolService: RolService) {}
 
   @Get()
   async getRoles() {
-  
     return await this.rolService.ConsultarRoles();
   }
 
@@ -35,12 +34,8 @@ constructor(private rolService: RolService){}
     return await this.rolService.obtenerRolPorId(id);
   }
 
-
   @Put(':id')
-  async actualizarRol(
-    @Param('id') id: number,
-    @Body() updateDto: RolDto,
-  ) {
+  async actualizarRol(@Param('id') id: number, @Body() updateDto: RolDto) {
     try {
       return await this.rolService.actualizarRol(id, updateDto);
     } catch (error) {
@@ -51,7 +46,7 @@ constructor(private rolService: RolService){}
   @Delete(':id')
   async borrarRol(@Param('id') id: number) {
     try {
-      return await this.rolService.borrarRol(id);
+      return await this.rolService.eliminarRol(id);
     } catch (error) {
       throw new ConflictException(error.message);
     }

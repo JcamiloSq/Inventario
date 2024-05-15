@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import { Button, Grid, TextField, Typography, Paper, Toolbar } from '@mui/material';
 import { NotificationManager } from 'react-notifications';
 import useApi from '../../../components/UseApi';
-import SelectComponent from '../../../components/Select';
 import { useNavigate, useParams } from 'react-router-dom';
 
 
@@ -17,7 +16,7 @@ const initialState = {
       nombrerol: ''
  }
 
-export default function FormRol() {
+export default function FormUser() {
 
     const {id = null} = useParams();
 

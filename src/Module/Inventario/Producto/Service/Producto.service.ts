@@ -40,6 +40,7 @@ export class ProductoService {
     const productoExistente = await this.productoRepository.findOne({
       where: { IdProducto: id },
     });
+
     if (!productoExistente) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }

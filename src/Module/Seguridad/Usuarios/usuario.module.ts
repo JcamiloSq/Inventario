@@ -12,6 +12,7 @@ import { ProductoController } from 'src/Module/Inventario/Producto/Controller/Pr
 import { ProductoService } from 'src/Module/Inventario/Producto/Service/Producto.service';
 import { Categoria } from 'src/Entities/Categoria.entity';
 import { HashService } from './Services/hash.service';
+import { UsuarioService } from './Services/usuario.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario, Rol, Producto, Categoria])],
@@ -21,6 +22,12 @@ import { HashService } from './Services/hash.service';
     RolController,
     ProductoController,
   ],
-  providers: [LoginService, RolService, ProductoService, HashService],
+  providers: [
+    LoginService,
+    RolService,
+    ProductoService,
+    HashService,
+    UsuarioService,
+  ],
 })
 export class UsuarioModule {}
