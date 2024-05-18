@@ -1,12 +1,12 @@
 import {
     Column,
-    Double,
-    Entity,
+     Entity,
     PrimaryGeneratedColumn,
   } from 'typeorm';
   
   @Entity({ name: 'Categoria' })
   export class Categoria {
+    
     @PrimaryGeneratedColumn()
     IdCategoria: number;
   
