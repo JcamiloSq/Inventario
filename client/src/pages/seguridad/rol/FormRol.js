@@ -16,7 +16,7 @@ const initialState = {
       nombrerol: ''
  }
 
-export default function FormUser() {
+export default function FormRol() {
 
     const {id = null} = useParams();
 
