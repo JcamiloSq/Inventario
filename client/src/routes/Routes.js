@@ -7,6 +7,7 @@ import ListProducto from "../pages/inventario/producto/List";
 import FormRol from "../pages/seguridad/rol/FormRol";
 import FormUser from "../pages/seguridad/usuario/Form";
 import ListUser from "../pages/seguridad/usuario/List";
+import ConsultaInventario from "../pages/inventario/consulta/List";
 
 export default function RoutesApp() {
 
@@ -33,6 +34,7 @@ export default function RoutesApp() {
             <Route path="/seguridad/usuario/form" element={<ProtectedRoute><FormUser /></ProtectedRoute>} />
             <Route path="/seguridad/usuario/list" element={<ProtectedRoute><ListUser /></ProtectedRoute>} />
             <Route path="/seguridad/usuario/edit/:id" element={<ProtectedRoute><FormUser /></ProtectedRoute>} />
+            <Route path="/inventario/consultainventario" element={<ProtectedRoute><ConsultaInventario /></ProtectedRoute>} />
         </Routes>
     )
 }

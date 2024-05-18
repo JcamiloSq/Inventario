@@ -13,6 +13,8 @@ import { ProductoService } from 'src/Module/Inventario/Producto/Service/Producto
 import { Categoria } from 'src/Entities/Categoria.entity';
 import { HashService } from './Services/hash.service';
 import { UsuarioService } from './Services/usuario.service';
+import { ConsultaController } from 'src/Module/Inventario/InventarioDisponibleConsulta/Controller/Consulta.controller';
+import { ConsultaService } from 'src/Module/Inventario/InventarioDisponibleConsulta/Service/Consulta.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario, Rol, Producto, Categoria])],
@@ -21,6 +23,7 @@ import { UsuarioService } from './Services/usuario.service';
     LoginController,
     RolController,
     ProductoController,
+    ConsultaController,
   ],
   providers: [
     LoginService,
@@ -28,6 +31,7 @@ import { UsuarioService } from './Services/usuario.service';
     ProductoService,
     HashService,
     UsuarioService,
+    ConsultaService,
   ],
 })
 export class UsuarioModule {}

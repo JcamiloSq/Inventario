@@ -239,7 +239,7 @@ export default function Dashboard() {
                         <ListItemText primary="Salida inventario"/>
                       </ListItemButton>
                     </Link>
-                    <Link to="/inventario/entrada/List" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/inventario/consultainventario" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <ListItemButton sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <InventoryIcon/>
