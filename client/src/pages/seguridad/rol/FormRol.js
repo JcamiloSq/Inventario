@@ -56,7 +56,7 @@ export default function FormUser() {
         try {
             const response = await method(`${'rol'}/${id || ''}`, data);
             NotificationManager.success(message);
-            navigate(`${'/seguridad/rol/edit'}/${response.IdRol}`)
+            navigate(`${'/seguridad/rol/edit'}/${response.IdRol}`, { replace: true })
 
         }  catch (error) {
             NotificationManager.warning(error.message);

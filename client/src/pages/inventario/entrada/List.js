@@ -49,13 +49,13 @@ const rows = [
   createData('Brazil', 'BR', 210147125, 8515767),
 ];
 
-// function CustomToolbar() {
-//   return (
-//     <GridToolbarContainer>
-//       <GridToolbarExport printOptions={{ disableToolbarButton: true }}/>
-//     </GridToolbarContainer>
-//   );
-// }
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport printOptions={{ disableToolbarButton: true }}/>
+    </GridToolbarContainer>
+  );
+}
 
 function createData(name, code, population, size) {
   const density = population / size;
@@ -78,9 +78,9 @@ export default function EnhancedTable() {
         components={{
           Toolbar: GridToolbar,
         }}
-        // slots={{
-        //   toolbar: CustomToolbar,
-        // }}
+        slots={{
+          toolbar: CustomToolbar,
+        }}
         disableSelectionOnClick
       />
     </Paper>

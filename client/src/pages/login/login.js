@@ -1,12 +1,12 @@
 import React from 'react';
 import { Field, Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { Button, Grid, TextField, Typography, Paper, InputAdornment } from '@mui/material';
+import { Button, Grid, TextField, Typography, Paper, IconButton } from '@mui/material';
 import { NotificationManager } from 'react-notifications';
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../components/UseApi';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 const validationSchema = Yup.object().shape({
@@ -20,13 +20,21 @@ const initialState = {
 }
 
 function Login() {
-  const { doGet } = useApi();
+  const { doPost } = useApi();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const OnSubmit = async(values)=> {
     try {
-      await doGet('login', values);
+      await doPost('login', values);
       localStorage.setItem('user', JSON.stringify(values.username));
-      navigate('/Dashboard');
+      navigate('/dashboard');
     } catch (error){
       NotificationManager.warning(error.message);
     }
@@ -61,13 +69,17 @@ function Login() {
                       <Field name="password" as={TextField}
                         fullWidth
                         label="Contraseña"
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         margin="normal"
                         InputProps={{
                           endAdornment: (
-                            <InputAdornment position="end">
-                              <FontAwesomeIcon icon={faLock} />
-                            </InputAdornment>
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
                           )
                         }}
                         helperText={touched.password && errors.password ? errors.password : ""}

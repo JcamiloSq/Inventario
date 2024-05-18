@@ -71,7 +71,7 @@ export default function FormProducto() {
         try {
             const response = await method(`${'producto'}/${id || ''}`, data);
             NotificationManager.success(message);
-            navigate(`${'/inventario/producto/edit'}/${response.IdProducto}`)
+            navigate(`${'/inventario/producto/edit'}/${response.IdProducto}`, { replace: true })
 
         }  catch (error) {
             NotificationManager.warning(error.message);

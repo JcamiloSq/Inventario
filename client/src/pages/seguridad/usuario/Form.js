@@ -11,8 +11,12 @@ import SelectComponent from '../../../components/Select';
 const validationSchema = Yup.object().shape({
     nombrerol: Yup.string().required('El rol es requerido'),
     usuario: Yup.string().required('El usuario es requerido'),
-    contrasena: Yup.string().required('La contaseña es requerida'),
-    email: Yup.string().required('El correo es requerido'),
+    contrasena: Yup.string().required('La contaseña es requerida')
+        .matches(
+        /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*.])/,
+        'La contraseña debe contener al menos un carácter alfabético, un número y un carácter especial'
+      ).min(9, 'La contraseña debe contener minimo 8 caracteres'),
+    email: Yup.string().email('Debe ser un correo electronico valido').required('El correo es requerido'),
     nombrecompleto: Yup.string().required('El Nombre completo es requerido'),
 });
 
@@ -76,7 +80,7 @@ export default function FormUser() {
         try {
             const response = await method(`${'usuario'}/${id || ''}`, data);
             NotificationManager.success(message);
-            navigate(`${'/seguridad/usuario/edit'}/${response.IdRol}`)
+            navigate(`${'/seguridad/usuario/edit'}/${response.IdRol}`, { replace: true })
 
         }  catch (error) {
             NotificationManager.warning(error.message);
@@ -139,6 +143,7 @@ export default function FormUser() {
                                                 fullWidth
                                                 label="Contraseña"
                                                 type="password"
+                                                inputProps={{ maxLength: 10 }}
                                                 helperText={touched.contrasena && errors.contrasena ? errors.contrasena : ""}
                                                 error={touched.contrasena && Boolean(errors.contrasena)}
                                             />
@@ -147,7 +152,7 @@ export default function FormUser() {
                                             <Field name="email" as={TextField}
                                                 fullWidth
                                                 label="Correo"
-                                                type="text"
+                                                type="email"
                                                 helperText={touched.email && errors.email ? errors.email : ""}
                                                 error={touched.email && Boolean(errors.email)}
                                             />

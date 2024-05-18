@@ -3,12 +3,14 @@ import { LoginDto } from '../Dto/login.dto';
 import { Repository } from 'typeorm';
 import { Usuario } from 'src/Entities/Usuario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HashService } from './hash.service';
 
 @Injectable()
 export class LoginService {
   constructor(
     @InjectRepository(Usuario)
     private userRepository: Repository<Usuario>,
+    private hashService: HashService,
   ) {}
 
   async validateUserLogin(loginDto: LoginDto) {
@@ -20,7 +22,12 @@ export class LoginService {
       throw new NotFoundException('Las credenciales no son correctas');
     }
 
-    if (user.Contrasena != loginDto.password) {
+    const isContrasena = this.hashService.comparePasswords(
+      loginDto.password,
+      user.Contrasena,
+    );
+
+    if (!isContrasena) {
       throw new NotFoundException('Las credenciales no son correctas');
     }
 
