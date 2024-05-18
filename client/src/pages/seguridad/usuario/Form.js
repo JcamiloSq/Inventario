@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
         .matches(
         /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*.])/,
         'La contraseña debe contener al menos un carácter alfabético, un número y un carácter especial'
-      ).min(9, 'La contraseña debe contener minimo 8 caracteres'),
+      ).min(8, 'La contraseña debe contener minimo 8 caracteres'),
     email: Yup.string().email('Debe ser un correo electronico valido').required('El correo es requerido'),
     nombrecompleto: Yup.string().required('El Nombre completo es requerido'),
 });
