@@ -13,7 +13,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const initialState = {
-      categoria: ''
+      nombrecategoria: ''
  }
 
 export default function FormCategoria() {
@@ -33,9 +33,9 @@ export default function FormCategoria() {
         const init = async()=>{
             if (id) {
                 const data = await doGet(`${'categoria'}/${id}`);
-                const {nombrecategoria} = data;
+                const {NombreCategoria} = data;
                 setState({
-                    nombrecategoria: nombrecategoria
+                    nombrecategoria: NombreCategoria
                 })
             }
         };
@@ -70,7 +70,7 @@ export default function FormCategoria() {
         <>
             <Formik
                 initialValues={{
-                   nombrecategoria
+                   nombrecategoria,
                 }}
                 onSubmit={onSubmit}
                 validationSchema={validationSchema}
@@ -82,7 +82,7 @@ export default function FormCategoria() {
                             <Grid item xs={10} sm={6} md={4} lg={14}>
                                 <Paper elevation={20} style={{ width: 'auto', padding: '20px', marginLeft: '20px' }}>
                                     <Typography variant="h5" align="left" gutterBottom>
-                                        Categoria
+                                    Rol
                                     </Typography>
                                     <Grid item xs={12}>
                                         <Button
