@@ -14,23 +14,21 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 
 const validationSchema = Yup.object().shape({
-    proveedor: Yup.string().required('El proveedor es requerido'),
     documentoReferencia: Yup.string().required('El documento de referencia es requerido'),
 });
 
 const initialState = {
-    proveedor: '',
     consecutivo: '',
     observacion: '',
     documentoReferencia: '',
-    tipoDocumento: 'ENTRADA',
+    tipoDocumento: 'SALIDA',
     productos: [],
     table: []
 }
 
 let productosSelected = [];
 
-export default function FormEntradaInventario() {
+export default function FormSalidaInventario() {
 
     const {id = null} = useParams();
 
@@ -70,9 +68,9 @@ export default function FormEntradaInventario() {
 
         const init = async()=>{
             if (id) {
-                const response = await doGet('entrada/productos');
-                const table = await doGet(`entrada/productostable/${id}`)
-                const data = await doGet(`${'entrada'}/${id}`);
+                const response = await doGet('salida/productos');
+                const table = await doGet(`salida/productostable/${id}`)
+                const data = await doGet(`${'salida'}/${id}`);
                 const { IdDocumento, Proveedor, DocumentoReferencia, TipoDocumento, Observacion } = data;
                 setState({
                     consecutivo: IdDocumento,
@@ -104,7 +102,7 @@ export default function FormEntradaInventario() {
 
     const crearProductoSeleccion = async () => {
         try {
-            await doPut(`entrada/${id}/createProductos`, {Productos: productosSelected});
+            await doPut(`salida/${id}/createProductos`, {Productos: productosSelected});
             productosSelected = [];
             NotificationManager.success('Registros seleecionados correctamente');
         } catch (error) {
@@ -120,9 +118,9 @@ export default function FormEntradaInventario() {
         }
 
         try {
-            const response = await doPost('entrada', data);
+            const response = await doPost('salida', data);
             NotificationManager.success('Registros creado correctamente');
-            navigate(`${'/inventario/entrada/edit'}/${response.IdDocumento}`, { replace: true })
+            navigate(`${'/inventario/salida/edit'}/${response.IdDocumento}`, { replace: true })
         } catch (error) {
             NotificationManager.warning(error.message);
         }
@@ -130,7 +128,7 @@ export default function FormEntradaInventario() {
 
     const aprobateDocument = async() => {
         try {
-            await doPost(`entrada/generarentrada/${id}`);
+            await doPost(`salida/generarentrada/${id}`);
             NotificationManager.success('Inventario creado correctamente');
         } catch (error) {
             NotificationManager.warning(error.message);
@@ -203,7 +201,7 @@ export default function FormEntradaInventario() {
                     consecutivo,
                     observacion,
                     documentoReferencia,
-                    tipoDocumento: 'ENTRADA',
+                    tipoDocumento: 'SALIDA',
                 }}
                 onSubmit={OnSubmit}
                 validationSchema={validationSchema}
@@ -242,13 +240,6 @@ export default function FormEntradaInventario() {
                                                 disabled
                                                 label="Consecutivo"
                                                 type="text"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Field name="proveedor" as={TextField}
-                                                label="Proveedor"
-                                                helperText={touched.proveedor && errors.proveedor ? errors.proveedor : ""}
-                                                error={touched.proveedor && Boolean(errors.proveedor)}
                                             />
                                         </Grid>
                                         <Grid item xs={2}>

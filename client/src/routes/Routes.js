@@ -8,6 +8,8 @@ import FormRol from "../pages/seguridad/rol/FormRol";
 import FormUser from "../pages/seguridad/usuario/Form";
 import ListUser from "../pages/seguridad/usuario/List";
 import ConsultaInventario from "../pages/inventario/consulta/List";
+import FormSalidaInventario from "../pages/inventario/salida/Form";
+import ListSalidaInventario from "../pages/inventario/salida/List";
 
 export default function RoutesApp() {
 
@@ -26,6 +28,9 @@ export default function RoutesApp() {
             <Route path="/inventario/entrada/list" element={<ProtectedRoute><ListEntradaInventario /></ProtectedRoute>} />
             <Route path="/inventario/entrada/form" element={<ProtectedRoute><FormEntradaInventario /></ProtectedRoute>} />
             <Route path="/inventario/entrada/edit/:id" element={<ProtectedRoute><FormEntradaInventario /></ProtectedRoute>} />
+            <Route path="/inventario/salida/list" element={<ProtectedRoute><ListSalidaInventario /></ProtectedRoute>} />
+            <Route path="/inventario/salida/form" element={<ProtectedRoute><FormSalidaInventario /></ProtectedRoute>} />
+            <Route path="/inventario/salida/edit/:id" element={<ProtectedRoute><FormEntradaInventario /></ProtectedRoute>} />
             <Route path="/seguridad/rol" element={<ProtectedRoute><ListRol /></ProtectedRoute>} />
             <Route path="/inventario/producto/form" element={<ProtectedRoute><FormProducto /></ProtectedRoute>} />
             <Route path="/inventario/producto/edit/:id" element={<ProtectedRoute><FormProducto /></ProtectedRoute>} />
