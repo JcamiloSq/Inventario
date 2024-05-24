@@ -15,15 +15,31 @@ import { HashService } from './Services/hash.service';
 import { UsuarioService } from './Services/usuario.service';
 import { ConsultaController } from 'src/Module/Inventario/InventarioDisponibleConsulta/Controller/Consulta.controller';
 import { ConsultaService } from 'src/Module/Inventario/InventarioDisponibleConsulta/Service/Consulta.service';
+import { EntradaService } from 'src/Module/Inventario/EntradaInventario/Service/entrada.service';
+import { EntradaController } from 'src/Module/Inventario/EntradaInventario/Controller/entrada.controller';
+import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
+import { DocumentoInventarioProducto } from 'src/Entities/DocumentoInventarioProducto';
+import { Stock } from 'src/Entities/Stock.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario, Rol, Producto, Categoria])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Usuario,
+      Rol,
+      Producto,
+      Categoria,
+      DocumentoInventario,
+      DocumentoInventarioProducto,
+      Stock,
+    ]),
+  ],
   controllers: [
     UsuarioController,
     LoginController,
     RolController,
     ProductoController,
     ConsultaController,
+    EntradaController,
   ],
   providers: [
     LoginService,
@@ -32,6 +48,7 @@ import { ConsultaService } from 'src/Module/Inventario/InventarioDisponibleConsu
     HashService,
     UsuarioService,
     ConsultaService,
+    EntradaService,
   ],
 })
 export class UsuarioModule {}

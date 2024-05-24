@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Double } from 'typeorm';
 
 export class ProductoDto {
   @IsString()
@@ -12,7 +11,7 @@ export class ProductoDto {
 
   @IsNumber()
   @IsNotEmpty()
-  Precio: Double;
+  Precio: number;
 
   @IsNumber()
   @IsNotEmpty()

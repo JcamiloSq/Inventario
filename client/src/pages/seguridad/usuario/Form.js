@@ -39,7 +39,7 @@ export default function FormUser() {
 
     const setState = (dataState) => {
         setPrevState((prevState) => ({ ...prevState, ...dataState }));
-      };
+    };
 
     useEffect(()=>{
 

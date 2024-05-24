@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field, Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { Button, Grid, TextField, Typography, Paper, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { NotificationManager } from 'react-notifications';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useApi from '../../../components/UseApi';
-import SelectComponent from '../../../components/Select';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 
 const validationSchema = Yup.object().shape({
@@ -23,64 +21,28 @@ const initialState = {
     proveedor: '',
     consecutivo: '',
     observacion: '',
+    documentoReferencia: '',
+    tipoDocumento: 'ENTRADA',
     productos: [],
+    table: []
 }
 
-const options = [
-    { value: 'name', label: 'Name' },
-    { value: 'code', label: 'ISO Code' },
-    { value: 'population', label: 'Population' },
-    { value: 'size', label: 'Size (km²)' },
-];
-
-const columns = [
-    { field: 'name', headerName: 'Name', flex: 1, minWidth: 10 },
-    { field: 'code', headerName: 'ISO Code', flex: 1, minWidth: 180 },
-    { field: 'population', headerName: 'Population', type: 'number', flex: 1, minWidth: 180 },
-    { field: 'size', headerName: 'Size (km²)', type: 'number', flex: 1, minWidth: 180 },
-    {
-        field: 'actions',
-        type: 'actions',
-        headerName: 'Actions',
-        flex: 1,
-        minWidth: 180,
-        getActions: () => [
-            <GridActionsCellItem icon={<DeleteIcon />} label="Delete" />,
-        ],
-    },
-];
-
-
-const rows = [
-    createData('India', 'IN', 1324171354, 3287263),
-    createData('China', 'CN', 1403500365, 9596961),
-    createData('Italy', 'IT', 60483973, 301340),
-    createData('United States', 'US', 327167434, 9833520),
-    createData('Canada', 'CA', 37602103, 9984670),
-    createData('Australia', 'AU', 25475400, 7692024),
-    createData('Germany', 'DE', 83019200, 357578),
-    createData('Ireland', 'IE', 4857000, 70273),
-    createData('Mexico', 'MX', 126577691, 1972550),
-    createData('Japan', 'JP', 126317000, 377973),
-    createData('France', 'FR', 67022000, 640679),
-    createData('United Kingdom', 'GB', 67545757, 242495),
-    createData('Russia', 'RU', 146793744, 17098246),
-    createData('Nigeria', 'NG', 200962417, 923768),
-    createData('Brazil', 'BR', 210147125, 8515767),
-];
-
-function createData(name, code, population, size) {
-    const density = population / size;
-    return { id: name, name, code, population, size, density };
-}
-
+let productosSelected = [];
 
 export default function FormEntradaInventario() {
-    const { doGet } = useApi();
+
+    const {id = null} = useParams();
+
+    const { doGet, doPost, doPut } = useApi();
     const navigate = useNavigate();
     const [value, setValue] = useState('1');
+    const [state, setPrevState] = useState(initialState);
     const [productModal, setProductoModal] = useState(false);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
+
+    const setState = (dataState) => {
+        setPrevState((prevState) => ({ ...prevState, ...dataState }));
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -93,23 +55,104 @@ export default function FormEntradaInventario() {
         setRowSelectionModel([]);
     };
 
-    const crearProductoSeleccion = async (values) => {
+    const selectedModalProducto = async () => {
+        const selectedData = productos.filter((row) =>
+            rowSelectionModel.includes(row.id)
+        );
+        productosSelected = selectedData;
+        await crearProductoSeleccion();
+        setProductoModal(false);
+        setRowSelectionModel([]);
+    };
+
+    useEffect(()=>{
+
+        const init = async()=>{
+            if (id) {
+                const response = await doGet('entrada/productos');
+                const table = await doGet(`entrada/productostable/${id}`)
+                const data = await doGet(`${'entrada'}/${id}`);
+                const { IdDocumento, Proveedor, DocumentoReferencia, TipoDocumento, Observacion } = data;
+                setState({
+                    consecutivo: IdDocumento,
+                    proveedor: Proveedor,
+                    observacion: Observacion || '',
+                    documentoReferencia: DocumentoReferencia,
+                    tipoDocumento: TipoDocumento,
+                    productos: response,
+                    table: table
+                })
+            }
+        };
+
+        init();
+
+    }, [doGet, id]);
+
+    const processRowUpdate = (newRow, oldRow) => {
+        const updatedRows = productos.map((row) => {
+            if (row.id === oldRow.id) {
+                return { ...row, ...newRow };
+            }
+            return row;
+        });
+        setState({ ...state, productos: updatedRows });
+        return newRow;
+    };
+
+
+    const crearProductoSeleccion = async () => {
         try {
-            await doGet('login', values);
-            navigate('/Dashboard');
+            await doPut(`entrada/${id}/createProductos`, {Productos: productosSelected});
+            productosSelected = [];
+            NotificationManager.success('Registros seleecionados correctamente');
         } catch (error) {
             NotificationManager.warning(error.message);
         }
     }
 
     const OnSubmit = async (values) => {
+        const data = {
+            Proveedor: values.proveedor,
+            DocumentoReferencia: values.documentoReferencia,
+            TipoDocumento: values.tipoDocumento,
+        }
+
         try {
-            await doGet('login', values);
-            navigate('/Dashboard');
+            const response = await doPost('entrada', data);
+            NotificationManager.success('Registros creado correctamente');
+            navigate(`${'/inventario/entrada/edit'}/${response.IdDocumento}`, { replace: true })
         } catch (error) {
             NotificationManager.warning(error.message);
         }
     }
+
+    const aprobateDocument = async() => {
+        try {
+            await doPost(`entrada/generarentrada/${id}`);
+            NotificationManager.success('Inventario creado correctamente');
+        } catch (error) {
+            NotificationManager.warning(error.message);
+        }
+    }
+
+    const columnsProducto = [
+        { field: 'codigo', headerName: 'Codigo producto', flex: 1, minWidth: 180 },
+        { field: 'descripcion', headerName: 'Descripcion producto', flex: 1, minWidth: 180 },
+        { field: 'precioUnidad', headerName: 'Precio unidad', flex: 1, minWidth: 180 },
+        { field: 'cantidad', headerName: 'Cantidad', flex: 1, minWidth: 180, editable: true, type: 'number' },
+        { field: 'categoria', headerName: 'Categoria', flex: 1, minWidth: 180 },
+    ]
+
+    const columnsTable = [
+        { field: 'codigo', headerName: 'Codigo producto', flex: 1, minWidth: 180 },
+        { field: 'descripcion', headerName: 'Descripcion producto', flex: 1, minWidth: 180 },
+        { field: 'precioUnidad', headerName: 'Precio unidad', flex: 1, minWidth: 180 },
+        { field: 'cantidad', headerName: 'Cantidad', flex: 1, minWidth: 180, editable: true, type: 'number' },
+        { field: 'precioTotal', headerName: 'Precio total', flex: 1, minWidth: 180 },
+    ]
+
+    const { proveedor, productos, consecutivo, observacion, documentoReferencia, table } = state;
 
     return (
         <>
@@ -118,11 +161,11 @@ export default function FormEntradaInventario() {
                     <DialogTitle id="form-dialog-title">{"Productos"}</DialogTitle>
                     <DialogContent>
                         <DataGrid
-                            rows={rows}
-                            columns={columns}
+                            rows={productos}
+                            columns={columnsProducto}
                             pageSize={10}
                             initialState={{
-                                ...rows.initialState,
+                                ...productos.initialState,
                                 pagination: { paginationModel: { pageSize: 10 } },
                             }}
                             pageSizeOptions={[10, 30, 60]}
@@ -130,10 +173,12 @@ export default function FormEntradaInventario() {
                                 Toolbar: GridToolbar,
                             }}
                             checkboxSelection
-                            onRowSelectionModelChange={(newRowSelectionModel) => {
-                                setRowSelectionModel(newRowSelectionModel);
+                            processRowUpdate={processRowUpdate}
+                            onRowSelectionModelChange={(newSelectionModel) => {
+                                setRowSelectionModel(newSelectionModel);
                             }}
                             rowSelectionModel={rowSelectionModel}
+                            experimentalFeatures={{ newEditingApi: true }}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -141,6 +186,7 @@ export default function FormEntradaInventario() {
                             disableElevation
                             variant="contained"
                             color="primary"
+                            onClick={selectedModalProducto}
                         >
                             Seleccionar
 
@@ -150,11 +196,19 @@ export default function FormEntradaInventario() {
                 </Dialog>
             )}
             <Formik
-                initialValues={initialState}
+                initialValues={{
+                    proveedor,
+                    productos,
+                    consecutivo,
+                    observacion,
+                    documentoReferencia,
+                    tipoDocumento: 'ENTRADA',
+                }}
                 onSubmit={OnSubmit}
                 validationSchema={validationSchema}
+                enableReinitialize={true}
             >
-                {({ errors, touched, values, ...subProps }) => (
+                {() => (
                     <FormikForm>
                         <Grid container justifyContent="flex-start" alignItems="flex-start" style={{ minHeight: '80vh', marginTop: '20px' }}>
                             <Grid item xs={10} sm={6} md={4} lg={14}>
@@ -162,11 +216,22 @@ export default function FormEntradaInventario() {
                                     <Typography variant="h5" align="left" gutterBottom>
                                         Entrada inventario
                                     </Typography>
-                                    <Grid item xs={12}>
-                                        <Button
-                                            type='submit'
-                                            variant="contained"
-                                        >Guardar</Button>
+                                    <Grid container spacing={2}  alignItems="flex-end">
+                                        <Grid item xs={9}>
+                                            <Button
+                                                type='submit'
+                                                variant="contained"
+                                            >Guardar
+                                            </Button>
+                                        </Grid>
+                                        {id && (<Grid item xs={2}>
+                                            <Button
+                                                onClick={() => aprobateDocument()}
+                                                variant="contained"
+                                            >Ejecutar ingreso
+                                            </Button>
+                                        </Grid>
+                                        )}
                                     </Grid>
                                     <Toolbar />
                                     <Grid container spacing={2} alignItems="flex-end">
@@ -179,11 +244,19 @@ export default function FormEntradaInventario() {
                                             />
                                         </Grid>
                                         <Grid item xs={3}>
-                                            <Field
+                                            <Field name="proveedor" as={TextField}
                                                 label="Proveedor"
-                                                name="proveedor"
-                                                component={SelectComponent}
-                                                items={options}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Field name="documentoReferencia" as={TextField}
+                                                label="Documento referencia"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Field name="tipoDocumento" as={TextField}
+                                                label="Tipo documento"
+                                                disabled
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
@@ -197,7 +270,7 @@ export default function FormEntradaInventario() {
                                             />
                                         </Grid>
                                     </Grid>
-                                    <Box sx={{ width: '100%', typography: 'body1' }}>
+                                    {id && (<Box sx={{ width: '100%', typography: 'body1' }}>
                                         <TabContext value={value}>
                                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                                 <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -208,11 +281,11 @@ export default function FormEntradaInventario() {
                                                 <Paper sx={{ height: 700, width: '95%' }}>
                                                     <Button variant='outlined' onClick={openModalProducto} >Agregar productos</Button>
                                                     <DataGrid
-                                                        rows={rows}
-                                                        columns={columns}
+                                                        rows={table}
+                                                        columns={columnsTable}
                                                         pageSize={10}
                                                         initialState={{
-                                                            ...rows.initialState,
+                                                            ...table.initialState,
                                                             pagination: { paginationModel: { pageSize: 10 } },
                                                         }}
                                                         pageSizeOptions={[10, 30, 60]}
@@ -225,6 +298,7 @@ export default function FormEntradaInventario() {
                                             </TabPanel>
                                         </TabContext>
                                     </Box>
+                                    )}
                                 </Paper>
                             </Grid>
                         </Grid>
