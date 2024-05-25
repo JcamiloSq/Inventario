@@ -88,6 +88,7 @@ export class EntradaService {
     const documento = await this.entradaRepository.findOneBy({
       IdDocumento: id,
     });
+
     const ProducotsDocumentos = await this.docProdRepository.find({
       where: { IdDocumento: id },
     });

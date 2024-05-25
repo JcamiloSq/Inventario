@@ -39,6 +39,7 @@ export default function ListSalidaInventario() {
     { field: 'IdDocumento', headerName: 'Consecutivo salida', flex: 1, minWidth: 100 },
     { field: 'DocumentoReferencia', headerName: 'Documento referencia', flex: 1, minWidth: 180 },
     { field: 'TipoDocumento', headerName: 'Tipo de documento', flex: 1, minWidth: 180 },
+    { field: 'Estado', headerName: 'Estado', flex: 1, minWidth: 180 },
     {
       field: 'actions',
       type: 'actions',

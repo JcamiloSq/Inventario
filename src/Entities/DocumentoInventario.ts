@@ -13,4 +13,10 @@ export class DocumentoInventario {
 
   @Column({ type: 'varchar' })
   TipoDocumento: string;
+
+  @Column({ type: 'varchar' })
+  Observacion: string;
+
+  @Column({ type: 'varchar' })
+  Estado: string;
 }
