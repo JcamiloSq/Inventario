@@ -33,6 +33,7 @@ export class EntradaService {
         'd.DocumentoReferencia as DocumentoReferencia',
         'd.TipoDocumento as TipoDocumento',
         'd.Observacion as ObservacionEstado',
+        'd.Proveedor as Proveedor',
         "COALESCE(d.Estado, 'PENDIENTE') as Estado",
       ])
       .where('d.TipoDocumento = :documento', { documento: 'ENTRADA' })
