@@ -15,15 +15,34 @@ import { HashService } from './Services/hash.service';
 import { UsuarioService } from './Services/usuario.service';
 import { CategoriaController } from 'src/Module/Inventario/Producto/Controller/Categoria.controller';
 import { CategoriaService } from 'src/Module/Inventario/Producto/Service/Categoria.service';
+import { ConsultaController } from 'src/Module/Inventario/InventarioDisponibleConsulta/Controller/Consulta.controller';
+import { ConsultaService } from 'src/Module/Inventario/InventarioDisponibleConsulta/Service/Consulta.service';
+import { EntradaService } from 'src/Module/Inventario/EntradaInventario/Service/entrada.service';
+import { EntradaController } from 'src/Module/Inventario/EntradaInventario/Controller/entrada.controller';
+import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
+import { DocumentoInventarioProducto } from 'src/Entities/DocumentoInventarioProducto';
+import { Stock } from 'src/Entities/Stock.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario, Rol, Producto, Categoria])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Usuario,
+      Rol,
+      Producto,
+      Categoria,
+      DocumentoInventario,
+      DocumentoInventarioProducto,
+      Stock,
+    ]),
+  ],
   controllers: [
     UsuarioController,
     LoginController,
     RolController,
     ProductoController,
     CategoriaController,
+    ConsultaController,
+    EntradaController,
   ],
   providers: [
     LoginService,
@@ -32,6 +51,8 @@ import { CategoriaService } from 'src/Module/Inventario/Producto/Service/Categor
     HashService,
     UsuarioService,
     CategoriaService,
+    ConsultaService,
+    EntradaService,
   ],
 })
 export class UsuarioModule {}

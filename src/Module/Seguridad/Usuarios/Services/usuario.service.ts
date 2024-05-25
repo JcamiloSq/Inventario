@@ -54,16 +54,16 @@ export class UsuarioService {
       throw new NotFoundException(`No se encontró el usauri con ID: ${id}`);
     }
 
-    // const EsIgual = await this.hashService.comparePasswords(
-    //   updateDto.Contrasena,
-    //   usuario.Contrasena,
-    // );
-
-    // if (!EsIgual) {
-    updateDto.Contrasena = await this.hashService.hashPassword(
+    const EsIgual = await this.hashService.comparePasswords(
       updateDto.Contrasena,
+      usuario.Contrasena,
     );
-    // }
+
+    if (!EsIgual) {
+      updateDto.Contrasena = await this.hashService.hashPassword(
+        updateDto.Contrasena,
+      );
+    }
 
     const actualizarUsuario = this.usuarioRepository.merge(usuario, updateDto);
 

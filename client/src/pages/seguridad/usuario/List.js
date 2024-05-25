@@ -51,7 +51,6 @@ export default function ListUser() {
     const { idDelete } = state;
 
     try {
-      console.log(idDelete);
       await doDelete(`${'usuario'}/${idDelete}`);
       closeDelete();
       init();
