@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
@@ -28,15 +28,22 @@ export class EntradaService {
   async obtenerEntradas() {
     return await this.dataSource
       .createQueryBuilder(DocumentoInventario, 'd')
+      .select([
+        'd.IdDocumento as IdDocumento',
+        'd.DocumentoReferencia as DocumentoReferencia',
+        'd.TipoDocumento as TipoDocumento',
+        'd.Observacion as ObservacionEstado',
+        "COALESCE(d.Estado, 'PENDIENTE') as Estado",
+      ])
       .where('d.TipoDocumento = :documento', { documento: 'ENTRADA' })
-      .getMany();
+      .getRawMany();
   }
 
   async obtenerEntradaPorId(id: number) {
     return await this.entradaRepository.findOneBy({ IdDocumento: id });
   }
 
-  async obtenerProductos() {
+  async obtenerProductos(id: number) {
     return await this.dataSource
       .createQueryBuilder()
       .select([
@@ -49,6 +56,13 @@ export class EntradaService {
       ])
       .from(Producto, 'p')
       .innerJoin('Categoria', 'c', 'c.IdCategoria = p.IdCategoria')
+      .leftJoin(
+        'documento_inventario_producto',
+        'dip',
+        'p.IdProducto = dip.IdProducto and dip.IdDocumento = :documentoId',
+        { documentoId: id },
+      )
+      .where('dip.IdInvProd is null')
       .getRawMany();
   }
 
@@ -113,5 +127,34 @@ export class EntradaService {
         await this.stockRepository.save(stock);
       }
     }
+    documento.Estado = 'EJECUTADO';
+    await this.entradaRepository.save(documento);
+  }
+
+  async eliminarRegistroTable(id: number) {
+    const salidaExistente = await this.docProdRepository.findOne({
+      where: { IdInvProd: id },
+    });
+
+    if (!salidaExistente) {
+      throw new NotFoundException(`Registro con ID ${id} no encontrado`);
+    }
+    return await this.docProdRepository.delete({ IdInvProd: id });
+  }
+
+  async actualizarEntrada(id: number, updateDto: EntradaDto) {
+    const salidaExistente = await this.entradaRepository.findOne({
+      where: { IdDocumento: id },
+    });
+
+    if (!salidaExistente) {
+      throw new NotFoundException(`Salida con ID ${id} no encontrado`);
+    }
+    const salidaActualizado = this.entradaRepository.merge(
+      salidaExistente,
+      updateDto,
+    );
+
+    return await this.entradaRepository.save(salidaActualizado);
   }
 }

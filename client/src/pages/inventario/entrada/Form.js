@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Field, Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
 import { Button, Grid, TextField, Typography, Paper, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
@@ -10,7 +10,8 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 
 
 const validationSchema = Yup.object().shape({
@@ -25,7 +26,9 @@ const initialState = {
     documentoReferencia: '',
     tipoDocumento: 'ENTRADA',
     productos: [],
-    table: []
+    table: [],
+    estado: false,
+    openModalDelete: false,
 }
 
 let productosSelected = [];
@@ -34,7 +37,7 @@ export default function FormEntradaInventario() {
 
     const {id = null} = useParams();
 
-    const { doGet, doPost, doPut } = useApi();
+    const { doGet, doPost, doPut, doDelete } = useApi();
     const navigate = useNavigate();
     const [value, setValue] = useState('1');
     const [state, setPrevState] = useState(initialState);
@@ -66,29 +69,29 @@ export default function FormEntradaInventario() {
         setRowSelectionModel([]);
     };
 
+    const init = useCallback(async()=>{
+        if (id) {
+            const response = await doGet(`entrada/productos/${id}`);
+            const table = await doGet(`entrada/productostable/${id}`)
+            const data = await doGet(`entrada/${id}`);
+            const { IdDocumento, Proveedor, DocumentoReferencia, TipoDocumento, Observacion, Estado } = data;
+            setState({
+                consecutivo: IdDocumento,
+                proveedor: Proveedor,
+                observacion: Observacion || '',
+                documentoReferencia: DocumentoReferencia,
+                tipoDocumento: TipoDocumento,
+                productos: response,
+                table: table,
+                estado: Estado === 'EJECUTADO',
+            })
+        }
+    }, [doGet, id]);
+
     useEffect(()=>{
-
-        const init = async()=>{
-            if (id) {
-                const response = await doGet('entrada/productos');
-                const table = await doGet(`entrada/productostable/${id}`)
-                const data = await doGet(`${'entrada'}/${id}`);
-                const { IdDocumento, Proveedor, DocumentoReferencia, TipoDocumento, Observacion } = data;
-                setState({
-                    consecutivo: IdDocumento,
-                    proveedor: Proveedor,
-                    observacion: Observacion || '',
-                    documentoReferencia: DocumentoReferencia,
-                    tipoDocumento: TipoDocumento,
-                    productos: response,
-                    table: table
-                })
-            }
-        };
-
         init();
 
-    }, [doGet, id]);
+    }, [init]);
 
     const processRowUpdate = (newRow, oldRow) => {
         const updatedRows = productos.map((row) => {
@@ -120,8 +123,10 @@ export default function FormEntradaInventario() {
         }
 
         try {
-            const response = await doPost('entrada', data);
-            NotificationManager.success('Registros creado correctamente');
+            const method = id ? doPut : doPost;
+            const message = id ? 'Registro actualizado correctamente' : 'Registro creado correctamente';
+            const response = await method(`entrada/${id || ''}`, data);
+            NotificationManager.success(message);
             navigate(`${'/inventario/entrada/edit'}/${response.IdDocumento}`, { replace: true })
         } catch (error) {
             NotificationManager.warning(error.message);
@@ -132,10 +137,28 @@ export default function FormEntradaInventario() {
         try {
             await doPost(`entrada/generarentrada/${id}`);
             NotificationManager.success('Inventario creado correctamente');
+            init();
         } catch (error) {
             NotificationManager.warning(error.message);
         }
     }
+
+    const openDelete = (row) =>
+        setState({ idDelete: row.id, openModalDelete: true });
+
+    const closeDelete = () => setState({ idDelete: '', openModalDelete: false });
+
+    const deleteRegister = async () => {
+        const { idDelete } = state;
+        try {
+          await doDelete(`salida/eliminartable/${idDelete}`);
+          closeDelete();
+          init();
+          NotificationManager.success('Registro eliminado correctamente');
+        } catch (error) {
+          NotificationManager.error(error.message);
+        }
+      };
 
     const columnsProducto = [
         { field: 'codigo', headerName: 'Codigo producto', flex: 1, minWidth: 180 },
@@ -151,9 +174,26 @@ export default function FormEntradaInventario() {
         { field: 'precioUnidad', headerName: 'Precio unidad', flex: 1, minWidth: 180 },
         { field: 'cantidad', headerName: 'Cantidad', flex: 1, minWidth: 180, editable: true, type: 'number' },
         { field: 'precioTotal', headerName: 'Precio total', flex: 1, minWidth: 180 },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Actions',
+            flex: 1,
+            minWidth: 180,
+            getActions: (params) => [
+              <>
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label="Delete"
+                    disabled={estado}
+                    onClick={() => openDelete(params.row)}
+                />
+              </>,
+            ],
+          },
     ]
 
-    const { proveedor, productos, consecutivo, observacion, documentoReferencia, table } = state;
+    const { proveedor, productos, consecutivo, observacion, documentoReferencia, table, estado, openModalDelete } = state;
 
     return (
         <>
@@ -196,6 +236,25 @@ export default function FormEntradaInventario() {
                     </DialogActions>
                 </Dialog>
             )}
+            {openModalDelete && (
+                <>
+                <Dialog open onClose={closeDelete} fullWidth maxWidth="xs">
+                    <DialogContent>
+                    <DialogTitle id="alert-dialog-title">
+                        {'¿ Esta seguro de eliminar este registro?'}
+                    </DialogTitle>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={closeDelete} variant="contained">
+                        Cancelar
+                    </Button>
+                    <Button onClick={deleteRegister} autoFocus variant="contained">
+                        Aceptar
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+                </>
+            )}
             <Formik
                 initialValues={{
                     proveedor,
@@ -222,6 +281,7 @@ export default function FormEntradaInventario() {
                                             <Button
                                                 type='submit'
                                                 variant="contained"
+                                                disabled={estado}
                                             >Guardar
                                             </Button>
                                         </Grid>
@@ -229,6 +289,7 @@ export default function FormEntradaInventario() {
                                             <Button
                                                 onClick={() => aprobateDocument()}
                                                 variant="contained"
+                                                disabled={estado}
                                             >Ejecutar ingreso
                                             </Button>
                                         </Grid>
@@ -247,6 +308,7 @@ export default function FormEntradaInventario() {
                                         <Grid item xs={3}>
                                             <Field name="proveedor" as={TextField}
                                                 label="Proveedor"
+                                                disabled={estado}
                                                 helperText={touched.proveedor && errors.proveedor ? errors.proveedor : ""}
                                                 error={touched.proveedor && Boolean(errors.proveedor)}
                                             />
@@ -254,6 +316,7 @@ export default function FormEntradaInventario() {
                                         <Grid item xs={2}>
                                             <Field name="documentoReferencia" as={TextField}
                                                 label="Documento referencia"
+                                                disabled={estado}
                                                 helperText={touched.documentoReferencia && errors.documentoReferencia ? errors.documentoReferencia : ""}
                                                 error={touched.documentoReferencia && Boolean(errors.documentoReferencia)}
                                             />
@@ -271,6 +334,7 @@ export default function FormEntradaInventario() {
                                                 type="text"
                                                 margin="normal"
                                                 variant="outlined"
+                                                disabled={estado}
                                                 multiline
                                             />
                                         </Grid>
@@ -284,7 +348,7 @@ export default function FormEntradaInventario() {
                                             </Box>
                                             <TabPanel value="1">
                                                 <Paper sx={{ height: 700, width: '95%' }}>
-                                                    <Button variant='outlined' onClick={openModalProducto} >Agregar productos</Button>
+                                                    <Button variant='outlined' onClick={openModalProducto} disabled={estado} >Agregar productos</Button>
                                                     <DataGrid
                                                         rows={table}
                                                         columns={columnsTable}

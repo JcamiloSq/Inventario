@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,7 +16,7 @@ import { ProductoDocumentoDto } from '../Dto/productosDocumento.dto';
 export class EntradaController {
   constructor(private entradaService: EntradaService) {}
   @Post()
-  async crearUsuario(@Body() createDto: EntradaDto) {
+  async crearEntrada(@Body() createDto: EntradaDto) {
     try {
       return await this.entradaService.crearEntrada(createDto);
     } catch (error) {
@@ -23,10 +24,10 @@ export class EntradaController {
     }
   }
 
-  @Get('productos')
-  async obtenerProductos() {
+  @Get('productos/:id')
+  async obtenerProductos(@Param('id') id: number) {
     try {
-      return await this.entradaService.obtenerProductos();
+      return await this.entradaService.obtenerProductos(id);
     } catch (error) {
       throw new ConflictException(error.message);
     }
@@ -76,6 +77,27 @@ export class EntradaController {
     try {
       await this.entradaService.generateEntrada(id);
       return [];
+    } catch (error) {
+      throw new ConflictException(error.message);
+    }
+  }
+
+  @Put(':id')
+  async actualizarEntrada(
+    @Param('id') id: number,
+    @Body() updateDto: EntradaDto,
+  ) {
+    try {
+      return await this.entradaService.actualizarEntrada(id, updateDto);
+    } catch (error) {
+      throw new ConflictException(error.message);
+    }
+  }
+
+  @Delete('eliminartable/:id')
+  async eliminarRegistroTabla(@Param('id') id: number) {
+    try {
+      return await this.entradaService.eliminarRegistroTable(id);
     } catch (error) {
       throw new ConflictException(error.message);
     }
