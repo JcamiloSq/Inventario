@@ -13,7 +13,7 @@ const initialState = {
   openModalDelete: false,
 };
 
-export default function ListEntrada() {
+export default function ListSalidaInventario() {
   const [state, setPrevState] = useState(initialState);
 
   const { doGet } = useApi();
@@ -24,7 +24,7 @@ export default function ListEntrada() {
 
   const init = useCallback(async () => {
     try {
-      const respuestaRol = await doGet('entrada');
+      const respuestaRol = await doGet('salida');
       setState({ data: respuestaRol });
     } catch (error) {
       NotificationManager.error(error.message);
@@ -36,10 +36,10 @@ export default function ListEntrada() {
   }, [init]);
 
   const columns = [
-    { field: 'IdDocumento', headerName: 'Consecutivo entrada', flex: 1, minWidth: 100 },
-    { field: 'Proveedor', headerName: 'Proveedor', flex: 1, minWidth: 180 },
+    { field: 'IdDocumento', headerName: 'Consecutivo salida', flex: 1, minWidth: 100 },
     { field: 'DocumentoReferencia', headerName: 'Documento referencia', flex: 1, minWidth: 180 },
     { field: 'TipoDocumento', headerName: 'Tipo de documento', flex: 1, minWidth: 180 },
+    { field: 'Estado', headerName: 'Estado', flex: 1, minWidth: 180 },
     {
       field: 'actions',
       type: 'actions',
@@ -47,7 +47,7 @@ export default function ListEntrada() {
       flex: 1,
       minWidth: 180,
       getActions: (params) => [
-          <Link to={`${'/inventario/entrada/edit'}/${params.row.IdDocumento}`}>
+          <Link to={`${'/inventario/salida/edit'}/${params.row.IdDocumento}`}>
             <GridActionsCellItem icon={<EditIcon />} label="Edit" />
           </Link>
       ],
@@ -60,7 +60,7 @@ export default function ListEntrada() {
   return (
     <>
       <Paper sx={{ height: 700, width: '95%' }}>
-        <Link to="/inventario/entrada/form">
+        <Link to="/inventario/salida/form">
           <Button variant="contained">Crear</Button>
         </Link>
         <DataGrid

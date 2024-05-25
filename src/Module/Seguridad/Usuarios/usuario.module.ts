@@ -22,6 +22,8 @@ import { EntradaController } from 'src/Module/Inventario/EntradaInventario/Contr
 import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
 import { DocumentoInventarioProducto } from 'src/Entities/DocumentoInventarioProducto';
 import { Stock } from 'src/Entities/Stock.entity';
+import { SalidaService } from 'src/Module/Inventario/SalidaInventario/Service/salida.service';
+import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Controller/salida.controller';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { Stock } from 'src/Entities/Stock.entity';
     CategoriaController,
     ConsultaController,
     EntradaController,
+    SalidaController,
   ],
   providers: [
     LoginService,
@@ -53,6 +56,7 @@ import { Stock } from 'src/Entities/Stock.entity';
     CategoriaService,
     ConsultaService,
     EntradaService,
+    SalidaService,
   ],
 })
 export class UsuarioModule {}
