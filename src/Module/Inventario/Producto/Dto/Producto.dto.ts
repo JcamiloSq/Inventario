@@ -13,6 +13,10 @@ export class ProductoDto {
   @IsNotEmpty()
   Precio: number;
 
+  @IsString()
+  @IsNotEmpty()
+  UnidadMedida: string;
+
   @IsNumber()
   @IsNotEmpty()
   IdCategoria: number;

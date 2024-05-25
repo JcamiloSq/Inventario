@@ -8,9 +8,7 @@ import {
     Post,
     Put,
   } from '@nestjs/common';
-  import { ProductoService } from '../Service/Producto.service';
-  import { ProductoDto } from '../Dto/Producto.dto';
-import { CategoriaService } from '../Service/Categoria.service';
+ import { CategoriaService } from '../Service/Categoria.service';
 import { CategoriaDto } from '../Dto/Categoria.dto';
   
   @Controller('categoria')

@@ -4,6 +4,4 @@ export class CategoriaDto {
   @IsString()
   @IsNotEmpty()
   NombreCategoria: string;
-
-
 }

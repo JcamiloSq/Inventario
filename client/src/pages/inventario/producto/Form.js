@@ -12,6 +12,7 @@ const validationSchema = Yup.object().shape({
     codigo: Yup.string().required('El Codigo es requerido'),
     descripcion: Yup.string().required('La descripcion es requerido'),
     precio: Yup.number().min(0).required('El precio es requerido'),
+    unidadMedida: Yup.string().required('La unidad de medida es requerida'),
     categoria: Yup.string().required('La categoria es requerida')
 });
 
@@ -19,6 +20,7 @@ const initialState = {
     codigo: '',
     descripcion: '',
     precio: 0,
+    unidadMedida:'',
     categoria: '',
     listCategoria: [],
 }
@@ -41,11 +43,12 @@ export default function FormProducto() {
             const response = await doGet('producto/categoria');
             if (id) {
                 const data = await doGet(`${'producto'}/${id}`);
-                const { codigo, Descripcion, Precio, IdCategoria } = data;
+                const { codigo, Descripcion, Precio, UnidadMedida, IdCategoria } = data;
                 setState({
                     codigo: codigo,
                     descripcion: Descripcion,
                     precio: Precio,
+                    unidadMedida: UnidadMedida,
                     categoria: IdCategoria,
                 })
             }
@@ -62,6 +65,7 @@ export default function FormProducto() {
             codigo: values.codigo,
             Descripcion: values.descripcion,
             Precio: values.precio,
+            UnidadMedida: values.unidadMedida,
             IdCategoria: values.categoria,
         }
 
@@ -79,7 +83,7 @@ export default function FormProducto() {
     }
 
     const {
-        listCategoria, codigo, descripcion, precio, categoria
+        listCategoria, codigo, descripcion, precio, unidadMedida, categoria
     } = state;
 
     return (
@@ -89,6 +93,7 @@ export default function FormProducto() {
                     codigo,
                     descripcion,
                     precio,
+                    unidadMedida,
                     categoria,
                 }}
                 onSubmit={onSubmit}
@@ -127,6 +132,15 @@ export default function FormProducto() {
                                                 type="text"
                                                 helperText={touched.descripcion && errors.descripcion ? errors.descripcion : ""}
                                                 error={touched.descripcion && Boolean(errors.descripcion)}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Field name="unidadMedida" as={TextField}
+                                                fullWidth
+                                                label="Unidad de Medida"
+                                                type="text"
+                                                helperText={touched.unidadMedida && errors.unidadMedida ? errors.unidadMedida : ""}
+                                                error={touched.unidadMedida && Boolean(errors.unidadMedida)}
                                             />
                                         </Grid>
                                         <Grid item xs={2}>

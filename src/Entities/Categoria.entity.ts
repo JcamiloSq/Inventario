@@ -12,6 +12,5 @@ import {
   
     @Column({ type: 'varchar' })
     NombreCategoria: string;
-  
-  }
+    }
   

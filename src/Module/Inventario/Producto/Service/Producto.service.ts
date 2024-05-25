@@ -25,6 +25,7 @@ export class ProductoService {
         'p.codigo as codigo',
         'p.Precio as Precio',
         'p.Descripcion as Descripcion',
+        'p.UnidadMedida as UnidadMedida',
         'c.NombreCategoria as NombreCategoria',
       ])
       .leftJoin('Categoria', 'c', 'p.IdCategoria=c.IdCategoria')

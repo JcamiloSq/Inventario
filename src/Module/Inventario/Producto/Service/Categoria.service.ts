@@ -27,7 +27,7 @@ export class CategoriaService {
  
   async crearCategoria(createDto: CategoriaDto) {
     const newCategoria = this.categoriaRepository.create(createDto);
-    return this.categoriaRepository.save(newCategoria);
+     return await this.categoriaRepository.save(newCategoria);
   }
 
   async actualizarCategoria(id: number, updateDto: CategoriaDto) {

@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 
 const validationSchema = Yup.object().shape({
-    categoria: Yup.string().required('El nombre es requerido'),
+    nombrecategoria: Yup.string().required('El nombre es requerido'),
 
 });
 
@@ -46,6 +46,7 @@ export default function FormCategoria() {
 
 
     const onSubmit = async (values) => {
+        console.log(values);
         const data = {
             NombreCategoria: values.nombrecategoria
         }
@@ -86,7 +87,7 @@ export default function FormCategoria() {
                                     </Typography>
                                     <Grid item xs={12}>
                                         <Button
-                                            type='submit'
+                                            type="submit"
                                             variant="contained"
                                         >Guardar</Button>
                                     </Grid>
