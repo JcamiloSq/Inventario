@@ -33,9 +33,10 @@ export class EntradaService {
         'd.DocumentoReferencia as DocumentoReferencia',
         'd.TipoDocumento as TipoDocumento',
         'd.Observacion as ObservacionEstado',
-        'd.Proveedor as Proveedor',
+        'p.Nombre as Proveedor',
         "COALESCE(d.Estado, 'PENDIENTE') as Estado",
       ])
+      .leftJoin('Proveedor', 'p', 'd.IdProveedor = p.IdProveedor')
       .where('d.TipoDocumento = :documento', { documento: 'ENTRADA' })
       .getRawMany();
   }
@@ -111,7 +112,7 @@ export class EntradaService {
     for (const producto of ProducotsDocumentos) {
       const productoStock = await this.stockRepository.findOne({
         where: {
-          Proveedor: documento.Proveedor,
+          Proveedor: documento.IdProveedor,
           IdProducto: producto.IdProducto,
         },
       });
@@ -123,7 +124,7 @@ export class EntradaService {
         const newStock = new Stock();
         newStock.IdProducto = producto.IdProducto;
         newStock.Cantidad = producto.Cantidad;
-        newStock.Proveedor = documento.Proveedor;
+        newStock.Proveedor = documento.IdProveedor;
         const stock = this.stockRepository.create(newStock);
         await this.stockRepository.save(stock);
       }

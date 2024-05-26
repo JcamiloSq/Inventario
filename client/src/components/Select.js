@@ -3,6 +3,7 @@ import React from 'react';
 
 const SelectComponent = ({
     items,
+    disabled,
     label,
     field: { name, onBlur, value, onChange },
     form: { touched, errors, setFieldValue, setFieldTouched }, }) => {
@@ -22,6 +23,7 @@ const SelectComponent = ({
         <FormControl variant="outlined" fullWidth error={hasError} margin="dense">
             {hasError && <FormHelperText>{errors[name]}</FormHelperText>}
             <Select
+                disabled = {disabled}
                 id={name}
                 name={name}
                 value={value}

@@ -11,6 +11,6 @@ export class Stock {
   @Column({ type: 'float' })
   Cantidad: number;
 
-  @Column({ type: 'varchar' })
-  Proveedor: string;
+  @Column({ type: 'bigint' })
+  Proveedor: number;
 }

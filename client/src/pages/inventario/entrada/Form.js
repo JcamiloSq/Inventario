@@ -12,10 +12,11 @@ import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
+import SelectComponent from '../../../components/Select';
 
 
 const validationSchema = Yup.object().shape({
-    proveedor: Yup.string().required('El proveedor es requerido'),
+    proveedor: Yup.number().required('El proveedor es requerido'),
     documentoReferencia: Yup.string().required('El documento de referencia es requerido'),
 });
 
@@ -29,6 +30,7 @@ const initialState = {
     table: [],
     estado: false,
     openModalDelete: false,
+    listProveedores: [],
 }
 
 let productosSelected = [];
@@ -70,14 +72,16 @@ export default function FormEntradaInventario() {
     };
 
     const init = useCallback(async()=>{
+        const prove = await doGet(`proveedor/listproveedores`);
+        setState({ listProveedores: prove})
         if (id) {
             const response = await doGet(`entrada/productos/${id}`);
             const table = await doGet(`entrada/productostable/${id}`)
             const data = await doGet(`entrada/${id}`);
-            const { IdDocumento, Proveedor, DocumentoReferencia, TipoDocumento, Observacion, Estado } = data;
+            const { IdDocumento, IdProveedor, DocumentoReferencia, TipoDocumento, Observacion, Estado } = data;
             setState({
                 consecutivo: IdDocumento,
-                proveedor: Proveedor,
+                proveedor: IdProveedor,
                 observacion: Observacion || '',
                 documentoReferencia: DocumentoReferencia,
                 tipoDocumento: TipoDocumento,
@@ -117,7 +121,7 @@ export default function FormEntradaInventario() {
 
     const OnSubmit = async (values) => {
         const data = {
-            Proveedor: values.proveedor,
+            IdProveedor: values.proveedor,
             DocumentoReferencia: values.documentoReferencia,
             TipoDocumento: values.tipoDocumento,
         }
@@ -193,7 +197,7 @@ export default function FormEntradaInventario() {
           },
     ]
 
-    const { proveedor, productos, consecutivo, observacion, documentoReferencia, table, estado, openModalDelete } = state;
+    const { proveedor, productos, consecutivo, observacion, documentoReferencia, table, estado, openModalDelete, listProveedores } = state;
 
     return (
         <>
@@ -306,11 +310,12 @@ export default function FormEntradaInventario() {
                                             />
                                         </Grid>
                                         <Grid item xs={3}>
-                                            <Field name="proveedor" as={TextField}
+                                            <Field
                                                 label="Proveedor"
-                                                disabled={estado}
-                                                helperText={touched.proveedor && errors.proveedor ? errors.proveedor : ""}
-                                                error={touched.proveedor && Boolean(errors.proveedor)}
+                                                name="proveedor"
+                                                component={SelectComponent}
+                                                items={listProveedores}
+                                                disabled = {estado}
                                             />
                                         </Grid>
                                         <Grid item xs={2}>

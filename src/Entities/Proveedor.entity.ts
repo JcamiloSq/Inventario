@@ -1,22 +1,20 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'documento_inventario' })
-export class DocumentoInventario {
+@Entity({ name: 'Proveedor' })
+export class Proveedor {
   @PrimaryGeneratedColumn()
-  IdDocumento: number;
-
-  @Column({ type: 'bigint' })
   IdProveedor: number;
 
   @Column({ type: 'varchar' })
-  DocumentoReferencia: string;
+  Nombre: string;
 
   @Column({ type: 'varchar' })
-  TipoDocumento: string;
+  Nit: string;
 
   @Column({ type: 'varchar' })
-  Observacion: string;
+  Telefono: string;
 
   @Column({ type: 'varchar' })
-  Estado: string;
+  Email: string;
+
 }

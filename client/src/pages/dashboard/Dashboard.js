@@ -34,6 +34,7 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import ShieldIcon from '@mui/icons-material/Shield';
 import SellIcon from '@mui/icons-material/Sell';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import PeopleIcon from '@mui/icons-material/People';
 
 const drawerWidth = 280;
 
@@ -221,6 +222,14 @@ export default function Dashboard() {
                           <CategoryIcon/>
                         </ListItemIcon>
                         <ListItemText primary="Categoria"/>
+                      </ListItemButton>
+                    </Link>
+                    <Link to="/inventario/proveedor/List" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                          <PeopleIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="Proveedor"/>
                       </ListItemButton>
                     </Link>
                     <Link to="/inventario/entrada/list" style={{ textDecoration: 'none', color: 'inherit' }}>

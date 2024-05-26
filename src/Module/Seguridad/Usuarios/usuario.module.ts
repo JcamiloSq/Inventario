@@ -24,6 +24,9 @@ import { DocumentoInventarioProducto } from 'src/Entities/DocumentoInventarioPro
 import { Stock } from 'src/Entities/Stock.entity';
 import { SalidaService } from 'src/Module/Inventario/SalidaInventario/Service/salida.service';
 import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Controller/salida.controller';
+import { Proveedor } from 'src/Entities/Proveedor.entity';
+import { ProveedorController } from 'src/Module/Inventario/Proveedor/Controller/Proveedor.controller';
+import { ProveedorService } from 'src/Module/Inventario/Proveedor/Service/Proveedor.service';
 
 @Module({
   imports: [
@@ -35,6 +38,7 @@ import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Control
       DocumentoInventario,
       DocumentoInventarioProducto,
       Stock,
+      Proveedor,
     ]),
   ],
   controllers: [
@@ -46,6 +50,7 @@ import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Control
     ConsultaController,
     EntradaController,
     SalidaController,
+    ProveedorController,
   ],
   providers: [
     LoginService,
@@ -57,6 +62,7 @@ import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Control
     ConsultaService,
     EntradaService,
     SalidaService,
+    ProveedorService,
   ],
 })
 export class UsuarioModule {}

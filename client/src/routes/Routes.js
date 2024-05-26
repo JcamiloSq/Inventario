@@ -12,6 +12,8 @@ import FormCategoria from "../pages/inventario/categoria/Form";
 import ConsultaInventario from "../pages/inventario/consulta/List";
 import FormSalidaInventario from "../pages/inventario/salida/Form";
 import ListSalidaInventario from "../pages/inventario/salida/List";
+import ListProveedor from "../pages/inventario/proveedor/List";
+import FormProveedor from "../pages/inventario/proveedor/Form";
 
 export default function RoutesApp() {
 
@@ -46,6 +48,9 @@ export default function RoutesApp() {
             <Route path="/inventario/categoria/edit/:id" element={<ProtectedRoute><FormCategoria /></ProtectedRoute>} />
             <Route path="/inventario/categoria/form" element={<ProtectedRoute><FormCategoria /></ProtectedRoute>} />
             <Route path="/inventario/consultainventario" element={<ProtectedRoute><ConsultaInventario /></ProtectedRoute>} />
+            <Route path="/inventario/proveedor/list" element={<ProtectedRoute><ListProveedor /></ProtectedRoute>} />
+            <Route path="/inventario/proveedor/form" element={<ProtectedRoute><FormProveedor /></ProtectedRoute>} />
+            <Route path="/inventario/proveedor/edit/:id" element={<ProtectedRoute><FormProveedor /></ProtectedRoute>} />
         </Routes>
     )
 }
