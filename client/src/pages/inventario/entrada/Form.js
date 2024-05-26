@@ -67,8 +67,6 @@ export default function FormEntradaInventario() {
         );
         productosSelected = selectedData;
         await crearProductoSeleccion();
-        setProductoModal(false);
-        setRowSelectionModel([]);
     };
 
     const init = useCallback(async()=>{
@@ -113,6 +111,8 @@ export default function FormEntradaInventario() {
         try {
             await doPut(`entrada/${id}/createProductos`, {Productos: productosSelected});
             productosSelected = [];
+            setProductoModal(false);
+            setRowSelectionModel([]);
             NotificationManager.success('Registros seleecionados correctamente');
         } catch (error) {
             NotificationManager.warning(error.message);
@@ -141,7 +141,7 @@ export default function FormEntradaInventario() {
         try {
             await doPost(`entrada/generarentrada/${id}`);
             NotificationManager.success('Inventario creado correctamente');
-            init();
+            navigate('/inventario/entrada/list', { replace: true });
         } catch (error) {
             NotificationManager.warning(error.message);
         }

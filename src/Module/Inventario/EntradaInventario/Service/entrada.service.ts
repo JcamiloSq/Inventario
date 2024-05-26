@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
@@ -86,6 +86,13 @@ export class EntradaService {
   }
 
   async createProductosDocInv(id: number, createDto: ProductoDocumentoDto) {
+
+    for (const reg of createDto.Productos) {
+      if (Number(reg['cantidad']) <= 0) {
+          throw new ConflictException('La catidad no puede ser 0 o menor')
+      }
+    }
+
     for (const reg of createDto.Productos) {
       const prodDoc = new DocumentoInventarioProducto();
       prodDoc.IdDocumento = id;

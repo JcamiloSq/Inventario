@@ -135,7 +135,7 @@ export default function FormSalidaInventario() {
         try {
             await doPost(`salida/generarsalida/${id}`);
             NotificationManager.success('Salida de inventario ejecutada correctamente');
-            init()
+            navigate('/inventario/salida/list', { replace: true });
         } catch (error) {
             NotificationManager.warning(error.message);
         }

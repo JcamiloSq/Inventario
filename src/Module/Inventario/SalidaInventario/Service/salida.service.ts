@@ -107,9 +107,7 @@ export class SalidaService {
       IdDocumento: id,
     });
 
-    const ProducotsDocumentos = await this.docProdRepository.find({
-      where: { IdDocumento: id },
-    });
+    const ProducotsDocumentos = await this.dataSource.createQueryBuilder(DocumentoInventarioProducto, 'dip').select(['dip.Cantidad AS Cantidad', 'p.codigo AS codigo', 'p.IdProducto AS IdProducto']).leftJoin('Producto', 'p', 'dip.IdProducto = p.IdProducto').where('dip.IdDocumento = :documento', {documento: id}).getRawMany();
 
     for (const producto of ProducotsDocumentos) {
       const productoStock = await this.dataSource
@@ -122,10 +120,15 @@ export class SalidaService {
         .groupBy('s.IdProducto')
         .getRawOne();
 
+      if (!productoStock){
+        throw new ConflictException(
+          `No hay inventario para el producto ${producto.codigo}`);
+      }
+
       if (producto.Cantidad > productoStock.inventario) {
         throw new ConflictException(
           `No hay cantidad suficiente en el inventario para el producto ${productoStock.codigo},
-            cantidad disponibel ${productoStock.inventario}`,
+            cantidad disponible ${productoStock.inventario}`,
         );
       }
     }
