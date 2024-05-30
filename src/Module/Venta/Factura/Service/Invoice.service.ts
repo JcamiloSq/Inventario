@@ -12,11 +12,11 @@ export class InvoiceService {
   async sendInvoice(id: number) {
     const email = 'pruebacorreosfactura@gmail.com';
     const fileBuffer = await this.fileService.sendDataFactura(id);
-    const attachments = [{ filename: 'invoice.csv', content: fileBuffer }];
+    const attachments = [{ filename: 'factura.csv', content: fileBuffer }];
     await this.mailService.sendMail(
       email,
-      'Your Invoice',
-      'Attached is your invoice.',
+      'Factura genereada',
+      'Factura de venta realizada, se adjunta doucmento con su informacion',
       attachments,
     );
   }
