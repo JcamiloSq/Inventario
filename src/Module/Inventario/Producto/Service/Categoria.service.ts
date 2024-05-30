@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria } from 'src/Entities/Categoria.entity';
 import { CategoriaDto } from '../Dto/Categoria.dto';
 
-
 @Injectable()
 export class CategoriaService {
   constructor(
@@ -15,19 +14,20 @@ export class CategoriaService {
   ) {}
 
   async ConsultarCategoria() {
-    return await this.dataSource.createQueryBuilder(Categoria, 'Categoria').getMany();
+    return await this.dataSource
+      .createQueryBuilder(Categoria, 'Categoria')
+      .getMany();
   }
 
-    //Obtener el  por ID
+  //Obtener el  por ID
 
-    async obtenerCategoriaPorId(id: number) {
-      return await this.categoriaRepository.findOneBy({ IdCategoria: id });
-    }
+  async obtenerCategoriaPorId(id: number) {
+    return await this.categoriaRepository.findOneBy({ IdCategoria: id });
+  }
 
- 
   async crearCategoria(createDto: CategoriaDto) {
     const newCategoria = this.categoriaRepository.create(createDto);
-     return await this.categoriaRepository.save(newCategoria);
+    return await this.categoriaRepository.save(newCategoria);
   }
 
   async actualizarCategoria(id: number, updateDto: CategoriaDto) {
@@ -49,6 +49,4 @@ export class CategoriaService {
   async borrarCategoria(id: number) {
     return await this.categoriaRepository.delete({ IdCategoria: id });
   }
-
-  
 }

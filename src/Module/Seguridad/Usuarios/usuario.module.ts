@@ -27,6 +27,13 @@ import { SalidaController } from 'src/Module/Inventario/SalidaInventario/Control
 import { Proveedor } from 'src/Entities/Proveedor.entity';
 import { ProveedorController } from 'src/Module/Inventario/Proveedor/Controller/Proveedor.controller';
 import { ProveedorService } from 'src/Module/Inventario/Proveedor/Service/Proveedor.service';
+import { FacturaProducto } from 'src/Entities/FacturaProducto.entity';
+import { FacturaVenta } from 'src/Entities/Factura.entity';
+import { FacturaService } from 'src/Module/Venta/Factura/Service/Factura.service';
+import { FacturaVentaController } from 'src/Module/Venta/Factura/Controller/FacturaVenta.controller';
+import { InvoiceService } from 'src/Module/Venta/Factura/Service/Invoice.service';
+import { MailService } from 'src/Module/Venta/Factura/Service/mail.service';
+import { FileService } from 'src/Module/Venta/Factura/Service/file.service';
 
 @Module({
   imports: [
@@ -39,6 +46,8 @@ import { ProveedorService } from 'src/Module/Inventario/Proveedor/Service/Provee
       DocumentoInventarioProducto,
       Stock,
       Proveedor,
+      FacturaProducto,
+      FacturaVenta,
     ]),
   ],
   controllers: [
@@ -51,6 +60,7 @@ import { ProveedorService } from 'src/Module/Inventario/Proveedor/Service/Provee
     EntradaController,
     SalidaController,
     ProveedorController,
+    FacturaVentaController,
   ],
   providers: [
     LoginService,
@@ -63,6 +73,10 @@ import { ProveedorService } from 'src/Module/Inventario/Proveedor/Service/Provee
     EntradaService,
     SalidaService,
     ProveedorService,
+    FacturaService,
+    InvoiceService,
+    MailService,
+    FileService,
   ],
 })
 export class UsuarioModule {}

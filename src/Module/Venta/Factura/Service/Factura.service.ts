@@ -3,48 +3,62 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { DocumentoInventario } from 'src/Entities/DocumentoInventario';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FacturaVenta } from 'src/Entities/Factura.entity';
+import { FacturaVentaDto } from '../Dto/factura.dto';
 import { Producto } from 'src/Entities/Producto.entity';
-import { ProductoDocumentoDto } from '../Dto/productosDocumento.dto';
-import { DocumentoInventarioProducto } from 'src/Entities/DocumentoInventarioProducto';
+import { FacturaProducto } from 'src/Entities/FacturaProducto.entity';
 import { Stock } from 'src/Entities/Stock.entity';
-import { SalidaDto } from '../Dto/salida.dto';
+import { FacturaProductoDto } from '../Dto/FacturaProducto.dto';
+import { InvoiceService } from './Invoice.service';
 
 @Injectable()
-export class SalidaService {
+export class FacturaService {
   constructor(
-    @InjectRepository(DocumentoInventario)
-    private readonly salidaRepository: Repository<DocumentoInventario>,
-    @InjectRepository(DocumentoInventarioProducto)
-    private readonly docProdRepository: Repository<DocumentoInventarioProducto>,
+    @InjectRepository(FacturaVenta)
+    private facturaRepository: Repository<FacturaVenta>,
+    @InjectRepository(FacturaProducto)
+    private facturaProductoRepository: Repository<FacturaProducto>,
     @InjectRepository(Stock)
     private stockRepository: Repository<Stock>,
     private dataSource: DataSource,
+    private invoiceService: InvoiceService,
   ) {}
 
-  async crearSalida(createDto: SalidaDto) {
-    const documento = this.salidaRepository.create(createDto);
-    return await this.salidaRepository.save(documento);
-  }
-
-  async obtenerSalidas() {
+  async ConsultarFactura() {
     return await this.dataSource
-      .createQueryBuilder(DocumentoInventario, 'd')
-      .select([
-        'd.IdDocumento as IdDocumento',
-        'd.DocumentoReferencia as DocumentoReferencia',
-        'd.TipoDocumento as TipoDocumento',
-        'd.Observacion as ObservacionEstado',
-        "COALESCE(d.Estado, 'PENDIENTE') as Estado",
-      ])
-      .where('d.TipoDocumento = :documento', { documento: 'SALIDA' })
-      .getRawMany();
+      .createQueryBuilder(FacturaVenta, 'FacturaVenta')
+      .getMany();
   }
 
-  async obtenerSalidaPorId(id: number) {
-    return await this.salidaRepository.findOneBy({ IdDocumento: id });
+  async obtenerFacturaPorId(id: number) {
+    return await this.facturaRepository.findOneBy({ IdFacturaVenta: id });
+  }
+
+  async crearFactura(createDto: FacturaVentaDto) {
+    const newFacturaVenta = this.facturaRepository.create(createDto);
+    return await this.facturaRepository.save(newFacturaVenta);
+  }
+
+  async actualizarFactura(id: number, updateDto: FacturaVentaDto) {
+    const facturaExistente = await this.facturaRepository.findOne({
+      where: { IdFacturaVenta: id },
+    });
+
+    if (!facturaExistente) {
+      throw new NotFoundException(`Categoria con ID ${id} no encontrado`);
+    }
+    const categoriaActualizado = this.facturaRepository.merge(
+      facturaExistente,
+      updateDto,
+    );
+
+    return this.facturaRepository.save(categoriaActualizado);
+  }
+
+  async borrarFactura(id: number) {
+    return await this.facturaRepository.delete({ IdFacturaVenta: id });
   }
 
   async obtenerProductos(id: number) {
@@ -61,12 +75,12 @@ export class SalidaService {
       .from(Producto, 'p')
       .innerJoin('Categoria', 'c', 'c.IdCategoria = p.IdCategoria')
       .leftJoin(
-        'documento_inventario_producto',
+        'FacturaProducto',
         'dip',
-        'p.IdProducto = dip.IdProducto and dip.IdDocumento = :documentoId',
+        'p.IdProducto = dip.IdProducto and dip.IdFacturaVenta = :documentoId',
         { documentoId: id },
       )
-      .where('dip.IdInvProd is null')
+      .where('dip.IdFacProducto is null')
       .getRawMany();
   }
 
@@ -74,48 +88,33 @@ export class SalidaService {
     return await this.dataSource
       .createQueryBuilder()
       .select([
-        'p.IdInvProd as id',
+        'p.IdFacProducto as id',
         'pr.codigo as codigo',
         'pr.Descripcion as descripcion',
         'p.PrecioUnitario as precioUnidad',
         'p.Cantidad as cantidad',
         '(p.PrecioUnitario * p.Cantidad) as precioTotal',
       ])
-      .from(DocumentoInventarioProducto, 'p')
+      .from(FacturaProducto, 'p')
       .innerJoin('Producto', 'pr', 'p.IdProducto = pr.IdProducto')
-      .where('p.IdDocumento = :documento', { documento: id })
+      .where('p.IdFacturaVenta = :documento', { documento: id })
       .getRawMany();
   }
 
-  async createProductosDocInv(id: number, createDto: ProductoDocumentoDto) {
-    for (const reg of createDto.Productos) {
-      const prodDoc = new DocumentoInventarioProducto();
-      prodDoc.IdDocumento = id;
-      prodDoc.IdProducto = reg['id'];
-      prodDoc.Cantidad = reg['cantidad'];
-      prodDoc.PrecioUnitario = reg['precioUnidad'];
-
-      const newProdDoc = this.docProdRepository.create(prodDoc);
-      this.docProdRepository.save(newProdDoc);
-    }
-
-    return true;
-  }
-
   async generateSalida(id: number) {
-    const documento = await this.salidaRepository.findOneBy({
-      IdDocumento: id,
+    const documento = await this.facturaRepository.findOneBy({
+      IdFacturaVenta: id,
     });
 
     const ProducotsDocumentos = await this.dataSource
-      .createQueryBuilder(DocumentoInventarioProducto, 'dip')
+      .createQueryBuilder(FacturaProducto, 'dip')
       .select([
         'dip.Cantidad AS Cantidad',
         'p.codigo AS codigo',
         'p.IdProducto AS IdProducto',
       ])
       .leftJoin('Producto', 'p', 'dip.IdProducto = p.IdProducto')
-      .where('dip.IdDocumento = :documento', { documento: id })
+      .where('dip.IdFacturaVenta = :documento', { documento: id })
       .getRawMany();
 
     for (const producto of ProducotsDocumentos) {
@@ -142,6 +141,8 @@ export class SalidaService {
         );
       }
     }
+
+    await this.invoiceService.sendInvoice(id);
 
     for (const producto of ProducotsDocumentos) {
       const productoStock = await this.stockRepository.find({
@@ -170,51 +171,32 @@ export class SalidaService {
     }
 
     documento.Estado = 'EJECUTADO';
-    await this.salidaRepository.save(documento);
-  }
-
-  async eliminarSalida(id: number) {
-    const salidaExistente = await this.salidaRepository.findOne({
-      where: { IdDocumento: id },
-    });
-
-    if (!salidaExistente) {
-      throw new NotFoundException(`Registro con ID ${id} no encontrado`);
-    }
-
-    if (salidaExistente.Estado == 'EJECUTADO') {
-      throw new NotFoundException(
-        `La salida ya fue ejecutada, no se puede eliminar`,
-      );
-    }
-
-    return await this.docProdRepository.delete({ IdInvProd: id });
+    await this.facturaRepository.save(documento);
   }
 
   async eliminarRegistroTable(id: number) {
-    const salidaExistente = await this.docProdRepository.findOne({
-      where: { IdInvProd: id },
+    const salidaExistente = await this.facturaProductoRepository.findOne({
+      where: { IdFacProducto: id },
     });
 
     if (!salidaExistente) {
       throw new NotFoundException(`Registro con ID ${id} no encontrado`);
     }
-    return await this.docProdRepository.delete({ IdInvProd: id });
+    return await this.facturaProductoRepository.delete({ IdFacProducto: id });
   }
 
-  async actualizarProducto(id: number, updateDto: SalidaDto) {
-    const salidaExistente = await this.salidaRepository.findOne({
-      where: { IdDocumento: id },
-    });
+  async createProductosDocInv(id: number, createDto: FacturaProductoDto) {
+    for (const reg of createDto.Productos) {
+      const prodDoc = new FacturaProducto();
+      prodDoc.IdFacturaVenta = id;
+      prodDoc.IdProducto = reg['id'];
+      prodDoc.Cantidad = reg['cantidad'];
+      prodDoc.PrecioUnitario = reg['precioUnidad'];
 
-    if (!salidaExistente) {
-      throw new NotFoundException(`Salida con ID ${id} no encontrado`);
+      const newProdDoc = this.facturaProductoRepository.create(prodDoc);
+      this.facturaProductoRepository.save(newProdDoc);
     }
-    const salidaActualizado = this.salidaRepository.merge(
-      salidaExistente,
-      updateDto,
-    );
 
-    return await this.salidaRepository.save(salidaActualizado);
+    return true;
   }
 }

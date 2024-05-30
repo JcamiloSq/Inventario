@@ -14,6 +14,8 @@ import FormSalidaInventario from "../pages/inventario/salida/Form";
 import ListSalidaInventario from "../pages/inventario/salida/List";
 import ListProveedor from "../pages/inventario/proveedor/List";
 import FormProveedor from "../pages/inventario/proveedor/Form";
+import ListFacturaVenta from "../pages/venta/facturaventa/List";
+import FormFacturaVenta from "../pages/venta/facturaventa/Form";
 
 export default function RoutesApp() {
 
@@ -51,6 +53,9 @@ export default function RoutesApp() {
             <Route path="/inventario/proveedor/list" element={<ProtectedRoute><ListProveedor /></ProtectedRoute>} />
             <Route path="/inventario/proveedor/form" element={<ProtectedRoute><FormProveedor /></ProtectedRoute>} />
             <Route path="/inventario/proveedor/edit/:id" element={<ProtectedRoute><FormProveedor /></ProtectedRoute>} />
+            <Route path="/venta/facturaventa/list" element={<ProtectedRoute><ListFacturaVenta /></ProtectedRoute>} />
+            <Route path="/venta/facturaventa/form" element={<ProtectedRoute><FormFacturaVenta /></ProtectedRoute>} />
+            <Route path="/venta/facturaventa/edit/:id" element={<ProtectedRoute><FormFacturaVenta /></ProtectedRoute>} />
         </Routes>
     )
 }
