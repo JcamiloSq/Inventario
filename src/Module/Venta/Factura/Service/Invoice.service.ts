@@ -9,8 +9,7 @@ export class InvoiceService {
     private fileService: FileService,
   ) {}
 
-  async sendInvoice(id: number) {
-    const email = 'pruebacorreosfactura@gmail.com';
+  async sendInvoice(id: number, email: string) {
     const fileBuffer = await this.fileService.sendDataFactura(id);
     const attachments = [{ filename: 'factura.csv', content: fileBuffer }];
     await this.mailService.sendMail(

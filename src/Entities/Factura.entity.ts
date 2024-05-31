@@ -18,6 +18,9 @@ export class FacturaVenta {
   Cliente: string;
 
   @Column({ type: 'varchar' })
+  Correo: string;
+
+  @Column({ type: 'varchar' })
   Observacion: string;
 
   @Column({ type: 'varchar' })

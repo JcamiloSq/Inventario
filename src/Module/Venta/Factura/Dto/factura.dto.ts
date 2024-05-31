@@ -16,4 +16,8 @@ export class FacturaVentaDto {
   @IsString()
   @IsNotEmpty()
   Estado: string;
+
+  @IsString()
+  @IsNotEmpty()
+  Correo: string;
 }

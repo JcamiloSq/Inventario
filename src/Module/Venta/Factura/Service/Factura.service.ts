@@ -142,7 +142,7 @@ export class FacturaService {
       }
     }
 
-    await this.invoiceService.sendInvoice(id);
+    await this.invoiceService.sendInvoice(id, documento.Correo);
 
     for (const producto of ProducotsDocumentos) {
       const productoStock = await this.stockRepository.find({

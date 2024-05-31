@@ -17,6 +17,7 @@ import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 const validationSchema = Yup.object().shape({
     cliente: Yup.string().required('El proveedor es requerido'),
     documentoReferencia: Yup.string().required('El documento de referencia es requerido'),
+    correo: Yup.string().email('El correo no es un correo valido').required('El documento de referencia es requerido'),
 });
 
 const initialState = {
@@ -29,6 +30,7 @@ const initialState = {
     isEstado: false,
     estado: '',
     openModalDelete: false,
+    correo: '',
 }
 
 let productosSelected = [];
@@ -75,7 +77,7 @@ export default function FormFacturaVenta() {
             const table = await doGet(`facturaventa/productostable/${id}`)
             console.log(response, table);
             const data = await doGet(`facturaventa/${id}`);
-            const { IdDocumento, Cliente, DocumentoReferencia, Observacion, Estado } = data;
+            const { IdDocumento, Cliente, DocumentoReferencia, Observacion, Estado, Correo } = data;
             setState({
                 consecutivo: IdDocumento,
                 cliente: Cliente,
@@ -84,6 +86,7 @@ export default function FormFacturaVenta() {
                 productos: response,
                 table: table,
                 isEstado: Estado === 'EJECUTADO',
+                correo: Correo,
             })
         }
     }, [doGet, id]);
@@ -122,6 +125,7 @@ export default function FormFacturaVenta() {
             TipoDocumento: values.tipoDocumento,
             Observacion: values.observacion,
             Estado: values.estado === 'APROBADO' ? 'APROBADO' : 'PENDIENTE',
+            Correo: values.correo,
         }
 
         try {
@@ -195,7 +199,7 @@ export default function FormFacturaVenta() {
           },
     ]
 
-    const { cliente, productos, consecutivo, observacion, documentoReferencia, table, isEstado, openModalDelete } = state;
+    const { cliente, productos, consecutivo, observacion, documentoReferencia, table, isEstado, openModalDelete, correo } = state;
 
     return (
         <>
@@ -264,6 +268,7 @@ export default function FormFacturaVenta() {
                     consecutivo,
                     observacion,
                     documentoReferencia,
+                    correo,
                 }}
                 onSubmit={OnSubmit}
                 validationSchema={validationSchema}
@@ -314,12 +319,20 @@ export default function FormFacturaVenta() {
                                                 error={touched.cliente && Boolean(errors.cliente)}
                                             />
                                         </Grid>
-                                        <Grid>
+                                        <Grid item xs={2}>
                                             <Field name="documentoReferencia" as={TextField}
                                                 label="Documento referencia"
                                                 disabled={isEstado}
                                                 helperText={touched.documentoReferencia && errors.documentoReferencia ? errors.documentoReferencia : ""}
                                                 error={touched.documentoReferencia && Boolean(errors.documentoReferencia)}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={2} lg={5}>
+                                            <Field name="correo" as={TextField}
+                                                label="Correo"
+                                                disabled={isEstado}
+                                                helperText={touched.correo && errors.correo ? errors.correo : ""}
+                                                error={touched.correo && Boolean(errors.correo)}
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
