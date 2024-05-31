@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { DataSource, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Categoria } from 'src/Entities/Categoria.entity';
@@ -26,6 +30,16 @@ export class CategoriaService {
   }
 
   async crearCategoria(createDto: CategoriaDto) {
+    const existe = await this.categoriaRepository.findOneBy({
+      NombreCategoria: createDto.NombreCategoria,
+    });
+
+    if (existe) {
+      throw new ConflictException(
+        `Ya existe una categoria con el nombre ${createDto.NombreCategoria}`,
+      );
+    }
+
     const newCategoria = this.categoriaRepository.create(createDto);
     return await this.categoriaRepository.save(newCategoria);
   }
@@ -38,6 +52,20 @@ export class CategoriaService {
     if (!categoriaExistente) {
       throw new NotFoundException(`Categoria con ID ${id} no encontrado`);
     }
+
+    const existe = await this.categoriaRepository.findOne({
+      where: {
+        NombreCategoria: updateDto.NombreCategoria,
+        IdCategoria: Not(id),
+      },
+    });
+
+    if (existe) {
+      throw new ConflictException(
+        `Ya existe una categoria con el nombre ${updateDto.NombreCategoria}`,
+      );
+    }
+
     const categoriaActualizado = this.categoriaRepository.merge(
       categoriaExistente,
       updateDto,
