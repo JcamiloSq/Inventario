@@ -39,7 +39,7 @@ export default function ListProducto() {
   const columns = [
     { field: 'codigo', headerName: 'Codigo Producto', flex: 1, minWidth: 180 },
     { field: 'Descripcion', headerName: 'Descripcion', flex: 1, minWidth: 180 },
-    { field: 'UnidadMedida', headerName: 'Unidad de Medida', flex: 1, minWidth: 180 },
+    { field: 'NombreUnidadMedida', headerName: 'Unidad de Medida', flex: 1, minWidth: 180 },
     { field: 'NombreCategoria', headerName: 'Categoria', flex: 1, minWidth: 180 },
     { field: 'Precio', headerName: 'Precio', type: 'number', flex: 1, minWidth: 180 },
     {

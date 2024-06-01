@@ -223,6 +223,14 @@ export default function Dashboard() {
                         </ListItemIcon>
                         <ListItemText primary="Categoria"/>
                       </ListItemButton>
+                    </Link>         
+                    <Link to="/inventario/unidadmedida/List" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                          <CategoryIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="Unidad de Medida"/>
+                      </ListItemButton>
                     </Link>
                     <Link to="/inventario/proveedor/List" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <ListItemButton sx={{ pl: 4 }}>

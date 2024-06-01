@@ -34,6 +34,9 @@ import { FacturaVentaController } from 'src/Module/Venta/Factura/Controller/Fact
 import { InvoiceService } from 'src/Module/Venta/Factura/Service/Invoice.service';
 import { MailService } from 'src/Module/Venta/Factura/Service/mail.service';
 import { FileService } from 'src/Module/Venta/Factura/Service/file.service';
+import { UnidadMedida } from 'src/Entities/UnidadMedida.entity';
+import { UnidadMedidaController } from 'src/Module/Inventario/Producto/Controller/UnidadMedida.controller';
+import { UnidadMedidaService } from 'src/Module/Inventario/Producto/Service/UnidadMedida.service';
 
 @Module({
   imports: [
@@ -48,6 +51,7 @@ import { FileService } from 'src/Module/Venta/Factura/Service/file.service';
       Proveedor,
       FacturaProducto,
       FacturaVenta,
+      UnidadMedida,
     ]),
   ],
   controllers: [
@@ -61,6 +65,7 @@ import { FileService } from 'src/Module/Venta/Factura/Service/file.service';
     SalidaController,
     ProveedorController,
     FacturaVentaController,
+    UnidadMedidaController,
   ],
   providers: [
     LoginService,
@@ -77,6 +82,7 @@ import { FileService } from 'src/Module/Venta/Factura/Service/file.service';
     InvoiceService,
     MailService,
     FileService,
+    UnidadMedidaService,
   ],
 })
 export class UsuarioModule {}

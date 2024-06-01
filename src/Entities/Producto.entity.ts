@@ -14,8 +14,8 @@ export class Producto {
   @Column({ type: 'varchar' })
   Descripcion: string;
 
-  @Column({ type: 'varchar' })
-  UnidadMedida: string;
+  @Column({ type: 'bigint' })
+  IdUnidadMedida: number;
 
   @Column({ type: 'bigint' })
   IdCategoria: number;

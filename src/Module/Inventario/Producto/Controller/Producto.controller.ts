@@ -29,6 +29,11 @@ export class ProductoController {
     return await this.productoService.obtenerCategoria();
   }
 
+  @Get('unidadMedida')
+  async obtenerUnidadMedida() {
+    return await this.productoService.obtenerUnidadMedida();
+  }
+
   @Get(':id')
   async obtenerProductoPorId(@Param('id') id: number) {
     return await this.productoService.obtenerProductoPorId(id);

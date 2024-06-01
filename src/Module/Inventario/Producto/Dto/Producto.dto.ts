@@ -13,9 +13,9 @@ export class ProductoDto {
   @IsNotEmpty()
   Precio: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  UnidadMedida: string;
+  IdUnidadMedida: number;
 
   @IsNumber()
   @IsNotEmpty()
