@@ -22,7 +22,7 @@ const initialState = {
     unidadMedida: '',
     categoria: '',
     listCategoria: [],
-    listUnidadMedida: [], // Añadir lista de unidades de medida
+    listUnidadMedida: [],
 }
 
 export default function FormProducto() {
@@ -38,7 +38,7 @@ export default function FormProducto() {
         const init = async () => {
             try {
                 const responseCategoria = await doGet('producto/categoria');
-                const responseUnidadMedida = await doGet('producto/unidadmedida'); // Obtener lista de unidades de medida
+                const responseUnidadMedida = await doGet('producto/unidadmedida'); 
                 const newState = {
                     listCategoria: responseCategoria,
                     listUnidadMedida: responseUnidadMedida
