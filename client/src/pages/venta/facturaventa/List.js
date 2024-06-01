@@ -38,7 +38,6 @@ export default function ListFacturaVenta() {
   const columns = [
     { field: 'IdFacturaVenta', headerName: 'Consecutivo entrada', flex: 1, minWidth: 100 },
     { field: 'Fecha', headerName: 'Fecha de  creacion', flex: 1, minWidth: 180 },
-    { field: 'Total', headerName: 'Valor total factura', flex: 1, minWidth: 180 },
     { field: 'Cliente', headerName: 'Cliente', flex: 1, minWidth: 180 },
     { field: 'Estado', headerName: 'Estado', flex: 1, minWidth: 180 },
     {
