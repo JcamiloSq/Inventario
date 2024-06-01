@@ -56,6 +56,11 @@ export default function RoutesApp() {
             <Route path="/venta/facturaventa/list" element={<ProtectedRoute><ListFacturaVenta /></ProtectedRoute>} />
             <Route path="/venta/facturaventa/form" element={<ProtectedRoute><FormFacturaVenta /></ProtectedRoute>} />
             <Route path="/venta/facturaventa/edit/:id" element={<ProtectedRoute><FormFacturaVenta /></ProtectedRoute>} />
+
+            <Route path="/inventario/unidadmedida/list" element={<ProtectedRoute><ListUnidadMedida /></ProtectedRoute>} />
+            <Route path="/inventario/unidadmedida/edit/:id" element={<ProtectedRoute><FormUnidadMedida /></ProtectedRoute>} />
+            <Route path="/inventario/unidadmedida/form" element={<ProtectedRoute><FormCategoria /></ProtectedRoute>} />
+    
         </Routes>
     )
 }
