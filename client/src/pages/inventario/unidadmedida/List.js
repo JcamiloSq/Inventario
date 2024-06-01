@@ -31,8 +31,8 @@ export default function ListUnidadMedida() {
 
   const init = useCallback(async () => {
     try {
-      const respuestaCategoria = await doGet('categoria');
-      setState({ data: respuestaCategoria });
+      const respuestaUnidadMedida = await doGet('unidadMedida');
+      setState({ data: respuestaUnidadMedida });
     } catch (error) {
       NotificationManager.error(error.message);
     }
@@ -43,14 +43,14 @@ export default function ListUnidadMedida() {
   }, [init]);
 
   const openDelete = (row) =>
-    setState({ idDelete: row.IdCategoria, openModalDelete: true });
+    setState({ idDelete: row.IdUnidadMedida, openModalDelete: true });
   const closeDelete = () => setState({ idDelete: '', openModalDelete: false });
 
   const deleteRegister = async () => {
     const { idDelete } = state;
 
     try {
-      await doDelete(`${'categoria'}/${idDelete}`);
+      await doDelete(`${'unidadMedida'}/${idDelete}`);
       closeDelete();
       init();
       NotificationManager.success('Registro eliminado correctamente');
@@ -60,17 +60,17 @@ export default function ListUnidadMedida() {
   };
 
   const columns = [
-    { field: 'IdCategoria', headerName: 'IdCategoria', flex: 1, minWidth: 10 },
-    { field: 'NombreCategoria', headerName: 'NombreCategoria', flex: 1, minWidth: 180 },
+    { field: 'IdUnidadMedida', headerName: 'Id Unidad Medida', flex: 1, minWidth: 10 },
+    { field: 'NombreUnidadMedida', headerName: 'Nombre Unidad Medida', flex: 1, minWidth: 180 },
     {
       field: 'actions',
       type: 'actions',
-      headerName: 'Actions',
+      headerName: 'Acciones',
       flex: 1,
       minWidth: 180,
       getActions: (params) => [
         <>
-          <Link to={`${'/inventario/categoria/edit'}/${params.row.IdCategoria}`}>
+          <Link to={`${'/inventario/unidadMedida/edit'}/${params.row.IdUnidadMedida}`}>
             <GridActionsCellItem icon={<EditIcon />} label="Edit" />
           </Link>
           <GridActionsCellItem
@@ -93,7 +93,7 @@ export default function ListUnidadMedida() {
           <Dialog open onClose={closeDelete} fullWidth maxWidth="xs">
             <DialogContent>
               <DialogTitle id="alert-dialog-title">
-                {'¿ Esta seguro de eliminar este registro?'}
+                {'¿Está seguro de eliminar este registro?'}
               </DialogTitle>
             </DialogContent>
             <DialogActions>
@@ -108,11 +108,11 @@ export default function ListUnidadMedida() {
         </>
       )}
       <Paper sx={{ height: 700, width: '95%' }}>
-        <Link to="/inventario/categoria/form">
+        <Link to="/inventario/unidadMedida/form">
           <Button variant="contained">Crear</Button>
         </Link>
         <DataGrid
-          getRowId={(rows) => rows.IdCategoria}
+          getRowId={(rows) => rows.IdUnidadMedida}
           rows={rows}
           columns={columns}
           pageSize={10}
@@ -124,9 +124,6 @@ export default function ListUnidadMedida() {
           components={{
             Toolbar: GridToolbar,
           }}
-          // slots={{
-          //   toolbar: CustomToolbar,
-          // }}
           disableSelectionOnClick
         />
       </Paper>

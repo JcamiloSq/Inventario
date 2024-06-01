@@ -7,7 +7,6 @@ import useApi from '../../../components/UseApi';
 import SelectComponent from '../../../components/Select';
 import { useNavigate, useParams } from 'react-router-dom';
 
-
 const validationSchema = Yup.object().shape({
     codigo: Yup.string().required('El Codigo es requerido'),
     descripcion: Yup.string().required('La descripcion es requerido'),
@@ -20,52 +19,59 @@ const initialState = {
     codigo: '',
     descripcion: '',
     precio: 0,
-    unidadMedida:'',
+    unidadMedida: '',
     categoria: '',
     listCategoria: [],
+    listUnidadMedida: [], // Añadir lista de unidades de medida
 }
 
 export default function FormProducto() {
 
-    const {id = null} = useParams();
+    const { id = null } = useParams();
 
     const { doPost, doGet, doPut } = useApi();
-    const [state, setPrevState] = useState(initialState);
+    const [state, setState] = useState(initialState);
     const navigate = useNavigate();
 
-    const setState = (dataState) => {
-        setPrevState((prevState) => ({ ...prevState, ...dataState }));
-      };
+    useEffect(() => {
 
-    useEffect(()=>{
+        const init = async () => {
+            try {
+                const responseCategoria = await doGet('producto/categoria');
+                const responseUnidadMedida = await doGet('producto/unidadmedida'); // Obtener lista de unidades de medida
+                const newState = {
+                    listCategoria: responseCategoria,
+                    listUnidadMedida: responseUnidadMedida
+                };
 
-        const init = async()=>{
-            const response = await doGet('producto/categoria');
-            if (id) {
-                const data = await doGet(`${'producto'}/${id}`);
-                const { codigo, Descripcion, Precio, UnidadMedida, IdCategoria } = data;
-                setState({
-                    codigo: codigo,
-                    descripcion: Descripcion,
-                    precio: Precio,
-                    unidadMedida: UnidadMedida,
-                    categoria: IdCategoria,
-                })
+                if (id) {
+                    const data = await doGet(`producto/${id}`);
+                    const { codigo, Descripcion, Precio, IdUnidadMedida, IdCategoria } = data;
+                    newState.codigo = codigo;
+                    newState.descripcion = Descripcion;
+                    newState.precio = Precio;
+                    newState.unidadMedida = IdUnidadMedida;
+                    newState.categoria = IdCategoria;
+                }
+                setState(prevState => ({
+                    ...prevState,
+                    ...newState
+                }));
+            } catch (error) {
+                console.error(error);
             }
-            setState({ listCategoria: response })
         };
 
         init();
 
     }, [doGet, id]);
 
-
     const onSubmit = async (values) => {
         const data = {
             codigo: values.codigo,
             Descripcion: values.descripcion,
             Precio: values.precio,
-            UnidadMedida: values.unidadMedida,
+            IdUnidadMedida: values.unidadMedida,
             IdCategoria: values.categoria,
         }
 
@@ -73,17 +79,17 @@ export default function FormProducto() {
 
         const message = id ? 'Registro actualizado correctamente' : 'Registro creado correctamente';
         try {
-            const response = await method(`${'producto'}/${id || ''}`, data);
+            const response = await method(`producto/${id || ''}`, data);
             NotificationManager.success(message);
-            navigate(`${'/inventario/producto/edit'}/${response.IdProducto}`, { replace: true })
+            navigate(`/inventario/producto/edit/${response.IdProducto}`, { replace: true })
 
-        }  catch (error) {
+        } catch (error) {
             NotificationManager.warning(error.message);
         }
     }
 
     const {
-        listCategoria, codigo, descripcion, precio, unidadMedida, categoria
+        listCategoria, listUnidadMedida, codigo, descripcion, precio, unidadMedida, categoria
     } = state;
 
     return (
@@ -135,12 +141,11 @@ export default function FormProducto() {
                                             />
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <Field name="unidadMedida" as={TextField}
-                                                fullWidth
+                                            <Field
                                                 label="Unidad de Medida"
-                                                type="text"
-                                                helperText={touched.unidadMedida && errors.unidadMedida ? errors.unidadMedida : ""}
-                                                error={touched.unidadMedida && Boolean(errors.unidadMedida)}
+                                                name="unidadMedida"
+                                                component={SelectComponent}
+                                                items={listUnidadMedida}
                                             />
                                         </Grid>
                                         <Grid item xs={2}>
@@ -170,6 +175,3 @@ export default function FormProducto() {
         </>
     );
 }
-
-
-

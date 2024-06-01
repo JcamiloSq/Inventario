@@ -16,6 +16,8 @@ import ListProveedor from "../pages/inventario/proveedor/List";
 import FormProveedor from "../pages/inventario/proveedor/Form";
 import ListFacturaVenta from "../pages/venta/facturaventa/List";
 import FormFacturaVenta from "../pages/venta/facturaventa/Form";
+import FormUnidadMedida from "../pages/inventario/unidadmedida/Form";
+import ListUnidadMedida from "../pages/inventario/unidadmedida/List";
 
 export default function RoutesApp() {
 
@@ -59,7 +61,7 @@ export default function RoutesApp() {
 
             <Route path="/inventario/unidadmedida/list" element={<ProtectedRoute><ListUnidadMedida /></ProtectedRoute>} />
             <Route path="/inventario/unidadmedida/edit/:id" element={<ProtectedRoute><FormUnidadMedida /></ProtectedRoute>} />
-            <Route path="/inventario/unidadmedida/form" element={<ProtectedRoute><FormCategoria /></ProtectedRoute>} />
+            <Route path="/inventario/unidadmedida/form" element={<ProtectedRoute><FormUnidadMedida /></ProtectedRoute>} />
     
         </Routes>
     )

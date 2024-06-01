@@ -6,20 +6,17 @@ import { NotificationManager } from 'react-notifications';
 import useApi from '../../../components/UseApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
-
 const validationSchema = Yup.object().shape({
-    nombrecategoria: Yup.string().required('El nombre es requerido'),
-
+    nombreUnidadMedida: Yup.string().required('El nombre es requerido'),
 });
 
 const initialState = {
-      nombrecategoria: ''
+      nombreUnidadMedida: ''
  }
 
 export default function FormUnidadMedida() {
 
-    const {id = null} = useParams();
-
+    const { id = null } = useParams();
     const { doPost, doGet, doPut } = useApi();
     const [state, setPrevState] = useState(initialState);
     const navigate = useNavigate();
@@ -29,13 +26,12 @@ export default function FormUnidadMedida() {
       };
 
     useEffect(()=>{
-
         const init = async()=>{
             if (id) {
-                const data = await doGet(`${'categoria'}/${id}`);
-                const {NombreCategoria} = data;
+                const data = await doGet(`${'unidadMedida'}/${id}`);
+                const { NombreUnidadMedida } = data;
                 setState({
-                    nombrecategoria: NombreCategoria
+                    nombreUnidadMedida: NombreUnidadMedida
                 })
             }
         };
@@ -44,34 +40,32 @@ export default function FormUnidadMedida() {
 
     }, [doGet, id]);
 
-
     const onSubmit = async (values) => {
         console.log(values);
         const data = {
-            NombreCategoria: values.nombrecategoria
+            NombreUnidadMedida: values.nombreUnidadMedida
         }
 
         const method = id ? doPut : doPost;
-
         const message = id ? 'Registro actualizado correctamente' : 'Registro creado correctamente';
         try {
-            const response = await method(`${'categoria'}/${id || ''}`, data);
+            const response = await method(`${'unidadMedida'}/${id || ''}`, data);
             NotificationManager.success(message);
-            navigate(`${'/inventario/categoria/edit'}/${response.IdCategoria}`, { replace: true })
-
+            navigate(`${'/inventario/unidadMedida/edit'}/${response.IdUnidadMedida}`, { replace: true })
         }  catch (error) {
             NotificationManager.warning(error.message);
         }
     }
 
     const {
-        nombrecategoria
+        nombreUnidadMedida
     } = state;
+
     return (
         <>
             <Formik
                 initialValues={{
-                   nombrecategoria,
+                   nombreUnidadMedida,
                 }}
                 onSubmit={onSubmit}
                 validationSchema={validationSchema}
@@ -94,12 +88,12 @@ export default function FormUnidadMedida() {
                                     <Toolbar />
                                     <Grid container spacing={2} alignItems="flex-end">
                                         <Grid item xs={2}>
-                                            <Field name="nombrecategoria" as={TextField}
+                                            <Field name="nombreUnidadMedida" as={TextField}
                                                 fullWidth
-                                                label="Nombre de la Categoria"
+                                                label="Nombre de la Unidad de Medida"
                                                 type="text"
-                                                helperText={touched.nombrecategoria && errors.nombrecategoria ? errors.nombrecategoria : ""}
-                                                error={touched.nombrecategoria && Boolean(errors.nombrecategoria)}
+                                                helperText={touched.nombreUnidadMedida && errors.nombreUnidadMedida ? errors.nombreUnidadMedida : ""}
+                                                error={touched.nombreUnidadMedida && Boolean(errors.nombreUnidadMedida)}
                                             />
                                         </Grid>
                                     </Grid>
@@ -112,6 +106,3 @@ export default function FormUnidadMedida() {
         </>
     );
 }
-
-
-
