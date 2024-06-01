@@ -27,13 +27,12 @@ export class ProductoService {
         'p.Precio as Precio',
         'p.Descripcion as Descripcion',
         'c.NombreCategoria as NombreCategoria',
-        'u.NombreUnidadMedida as NombreUnidadMedida'
+        'u.NombreUnidadMedida as NombreUnidadMedida',
       ])
       .leftJoin('Categoria', 'c', 'p.IdCategoria=c.IdCategoria')
-      .leftJoin('UnidadMedida', 'u','p.IdUnidadMedida=u.IdUnidadMedida') // Assuming there is a relation defined in the Producto entity
+      .leftJoin('UnidadMedida', 'u', 'p.IdUnidadMedida=u.IdUnidadMedida') // Assuming there is a relation defined in the Producto entity
       .getRawMany();
   }
-  
 
   async crearProducto(createDto: ProductoDto) {
     const newProducto = this.productoRepository.create(createDto);
@@ -76,7 +75,6 @@ export class ProductoService {
       .select([
         'UnidadMedida.idUnidadMedida as value',
         'UnidadMedida.NombreUnidadMedida as label',
-     
       ])
       .getRawMany();
   }

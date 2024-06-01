@@ -40,7 +40,10 @@ export class UnidadMedidaController {
     @Body() updateDto: UnidadMedidaDto,
   ) {
     try {
-      return await this.unidadMedidaService.actualizarUnidadMedida(id, updateDto);
+      return await this.unidadMedidaService.actualizarUnidadMedida(
+        id,
+        updateDto,
+      );
     } catch (error) {
       throw new ConflictException(error.message);
     }

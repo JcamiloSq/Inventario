@@ -46,10 +46,14 @@ export class UnidadMedidaService {
 
   // Actualizar UnidadMedida
   async actualizarUnidadMedida(id: number, updateDto: UnidadMedidaDto) {
-    const unidadMedidaExistente = await this.unidadMedidaRepository.findOneBy({ IdUnidadMedida: id });
+    const unidadMedidaExistente = await this.unidadMedidaRepository.findOneBy({
+      IdUnidadMedida: id,
+    });
 
     if (!unidadMedidaExistente) {
-      throw new NotFoundException(`Unidad de medida con ID ${id} no encontrado`);
+      throw new NotFoundException(
+        `Unidad de medida con ID ${id} no encontrado`,
+      );
     }
 
     const existe = await this.unidadMedidaRepository.findOne({
